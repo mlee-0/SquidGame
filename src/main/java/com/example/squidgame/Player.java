@@ -4,27 +4,10 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
-public class Player {
+public class Player extends Entity {
     private final int playerNumber;
-    private boolean alive = true;
-    private boolean finished = false;
+    private boolean playing = true;
     private boolean computer = true;
-
-    private double x;
-    private double y;
-    private double z = 0;
-    private double xSpeed = 0.0;
-    private double ySpeed = 0.0;
-    private double zSpeed = 0.0;
-    private int xDirection = 0;
-    private int yDirection = 0;
-    private int zDirection = 0;
-    private long timeStartMoveX;
-    private long timeStartMoveY;
-    private final double maxSpeed;
-//    private final double ACCELERATION = 10.0;
-//    private final double FRICTION = 5.0;
-    private final double GRAVITY_ACCELERATION = 9.81;
 
     private String name = "";
     private String occupation = "";
@@ -38,8 +21,8 @@ public class Player {
         this.y = y;
         this.maxSpeed = maxSpeed;
         sprite = new Circle(x, y, 5);
-        sprite.setFill(Paint.valueOf("#008099"));
-        sprite.setStroke(Paint.valueOf("#00404C"));
+        sprite.setFill(Paint.valueOf("#009FBF"));
+        sprite.setStroke(Paint.valueOf("#006A7F"));
         sprite.setStrokeWidth(1);
     }
 
@@ -47,21 +30,13 @@ public class Player {
         return sprite;
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public boolean isFinished() { return finished; }
+    public boolean isPlaying() { return playing; }
 
     public boolean isComputer() {
         return computer;
     }
 
-    public double[] getLocation() {
-        return new double[] {x, y};
-    }
-
-    public void toggleMove(long now, int xDirection, int yDirection) {
+    public void startMove(long now, int xDirection, int yDirection) {
         this.xDirection = xDirection;
         this.yDirection = yDirection;
         if (xDirection != 0) {
@@ -80,23 +55,36 @@ public class Player {
     }
 
     public void move(long now) {
+        if (x < X_MIN) {
+            xDirection = 0;
+        }
+        if (y < Y_MIN || y > Y_MAX) {
+            yDirection = 0;
+        }
+
         xSpeed = xDirection != 0 ? maxSpeed : 0;
         ySpeed = yDirection != 0 ? maxSpeed : 0;
         x += xDirection * xSpeed;
         y += yDirection * ySpeed;
+
         sprite.setCenterX(x);
         sprite.setCenterY(y);
     }
 
-    public boolean isMoving() {
-        return xSpeed > 0.0 || ySpeed > 0.0;
+    public void stop() {
+        playing = false;
+        sprite.setFill(Paint.valueOf("#BFBFBF"));
+        sprite.setStrokeWidth(0);
+        System.out.println("Stopped " + String.valueOf(playerNumber));
     }
 
     public void kill() {
         alive = false;
+        playing = false;
         xSpeed = 0.0;
         ySpeed = 0.0;
-        this.sprite.setFill(Paint.valueOf("#FFB6B6"));
-        this.sprite.setStrokeWidth(0);
+        sprite.setFill(Paint.valueOf("#FFB6B6"));
+        sprite.setStrokeWidth(0);
+        System.out.println("Killed " + String.valueOf(playerNumber));
     }
 }
