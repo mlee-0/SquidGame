@@ -7,7 +7,7 @@ import javafx.scene.shape.Shape;
 public class Player extends Entity {
     private final int playerNumber;
     private boolean playing = true;
-    private boolean computer = true;
+    private final boolean computer;
 
     private String name = "";
     private String occupation = "";
@@ -15,11 +15,12 @@ public class Player extends Entity {
 
     private Circle sprite;
 
-    Player(int playerNumber, double x, double y, double maxSpeed) {
+    Player(int playerNumber, double x, double y, double maxSpeed, boolean computer) {
         this.playerNumber = playerNumber;
         this.x = x;
         this.y = y;
         this.maxSpeed = maxSpeed;
+        this.computer = computer;
         sprite = new Circle(x, y, 5);
         sprite.setFill(Paint.valueOf("#009FBF"));
         sprite.setStroke(Paint.valueOf("#006A7F"));

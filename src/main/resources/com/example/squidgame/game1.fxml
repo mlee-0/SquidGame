@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.squidgame.Game1Controller">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <top>
+        <HBox alignment="CENTER" BorderPane.alignment="BASELINE_CENTER" spacing="20.0">
+            <Label fx:id="labelPlayerNumber"/>
+            <Label fx:id="labelTimer"/>
+            <Label fx:id="labelPrize"/>
+        </HBox>
+    </top>
+
+    <center>
+        <Pane fx:id="pane">
+        </Pane>
+    </center>
+</BorderPane>

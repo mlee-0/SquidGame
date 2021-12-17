@@ -11,6 +11,8 @@ public class RedLightGreenLight extends AnimationTimer {
     enum State { RED, GREEN, TURNING }
 
     private State state = State.RED;
+    // Time limit (seconds).
+    private final double TIME_LIMIT = 5 * 60;
     long previous;
     long elapsed = 0;
     long timeLastLightSwitch = 0;
@@ -26,7 +28,10 @@ public class RedLightGreenLight extends AnimationTimer {
             previous = now;
             return;
         }
-        elapsed += now - previous;
+        elapsed += (now - previous);
+        previous = now;
+        game.updateTimer(TIME_LIMIT - elapsed / 1e9);
+
         // Cycle the game state.
         if ((now - timeLastLightSwitch) > duration) {
             timeLastLightSwitch = now;
@@ -73,7 +78,7 @@ public class RedLightGreenLight extends AnimationTimer {
                 // Increment the player's position.
                 player.move(now);
                 // Stop playing if reached the end.
-                if (player.getLocation()[0] >= player.X_MAX) {
+                if (player.getLocation()[0] >= Entity.X_MAX) {
                     player.stop();
                 }
             }
