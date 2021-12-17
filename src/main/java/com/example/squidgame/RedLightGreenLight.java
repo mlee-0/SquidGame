@@ -18,6 +18,9 @@ public class RedLightGreenLight extends AnimationTimer {
     long timeLastLightSwitch = 0;
     long duration = (long) 3e9;
 
+    private final double probabilityStartMoving = 0.025;
+    private final double probabilityStopMoving = 0.05;
+
     RedLightGreenLight(Game game) {
         this.game = game;
     }
@@ -56,30 +59,46 @@ public class RedLightGreenLight extends AnimationTimer {
         int numberPlayersEliminated = 0;
         for (Player player: game.getPlayers()) {
             if (player.isAlive() && player.isPlaying()) {
+                // Kill the player if enough time has elapsed.
+                if (now >= player.getTimeKill()) {
+                    player.kill();
+                    numberPlayersEliminated += 1;
+                }
+
                 switch (state) {
                     case RED:
                         if (player.isMoving()) {
-                            player.kill();
-                            numberPlayersEliminated += 1;
+                            if (!player.isTargeted()) {
+                                player.target(now + (long)(random.nextDouble() * (long)(duration/3)));
+                            }
+                            if (random.nextFloat() < probabilityStopMoving && player.isComputer()) {
+                                player.stopMove();
+                            }
                         }
                         break;
                     case GREEN:
-                        if (!player.isMoving() && random.nextFloat() < 0.025) {
+                        if (!player.isMoving() && random.nextFloat() < probabilityStartMoving && player.isComputer()) {
                             int yDirection = random.nextInt(3) - 1;
                             player.startMove(now, 1, yDirection);
                         }
                         break;
                     case TURNING:
-                        if (player.isMoving() && random.nextFloat() < 0.05 && player.isComputer()) {
+                        if (player.isMoving() && random.nextFloat() < probabilityStopMoving && player.isComputer()) {
                             player.stopMove();
                         }
                         break;
                 }
                 // Increment the player's position.
                 player.move(now);
+                double[] location = player.getLocation();
+
                 // Stop playing if reached the end.
-                if (player.getLocation()[0] >= Entity.X_MAX) {
+                if (location[0] >= Entity.X_MAX) {
                     player.stop();
+                }
+                // Reverse the direction if at the bounds.
+                if (location[1] < Entity.Y_MIN || location[1] > Entity.Y_MAX) {
+                    player.changeYDirection(-1);
                 }
             }
         }

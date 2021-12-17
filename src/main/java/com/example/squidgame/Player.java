@@ -7,11 +7,14 @@ import javafx.scene.shape.Shape;
 public class Player extends Entity {
     private final int playerNumber;
     private boolean playing = true;
+    private boolean targeted = false;
     private final boolean computer;
 
     private String name = "";
     private String occupation = "";
     private int age;
+
+    private long timeKill = Long.MAX_VALUE;
 
     private Circle sprite;
 
@@ -33,9 +36,13 @@ public class Player extends Entity {
 
     public boolean isPlaying() { return playing; }
 
+    public boolean isTargeted() { return targeted; }
+
     public boolean isComputer() {
         return computer;
     }
+
+    public long getTimeKill() { return timeKill; }
 
     public void startMove(long now, int xDirection, int yDirection) {
         this.xDirection = xDirection;
@@ -59,12 +66,9 @@ public class Player extends Entity {
         if (x < X_MIN) {
             xDirection = 0;
         }
-        if (y < Y_MIN || y > Y_MAX) {
-            yDirection = 0;
-        }
 
         xSpeed = xDirection != 0 ? maxSpeed : 0;
-        ySpeed = yDirection != 0 ? maxSpeed : 0;
+        ySpeed = yDirection != 0 ? 0.25 : 0;
         x += xDirection * xSpeed;
         y += yDirection * ySpeed;
 
@@ -72,11 +76,26 @@ public class Player extends Entity {
         sprite.setCenterY(y);
     }
 
+    public void changeXDirection(int multiplier) {
+        xDirection *= multiplier;
+    }
+
+    public void changeYDirection(int multiplier) {
+        yDirection *= multiplier;
+    }
+
     public void stop() {
         playing = false;
         sprite.setFill(Paint.valueOf("#BFBFBF"));
         sprite.setStrokeWidth(0);
         System.out.println("Stopped " + String.valueOf(playerNumber));
+    }
+
+    public void target(long timeKill) {
+        targeted = true;
+        this.timeKill = timeKill;
+        sprite.setFill(Paint.valueOf("#FF4040"));
+        sprite.setStrokeWidth(0);
     }
 
     public void kill() {

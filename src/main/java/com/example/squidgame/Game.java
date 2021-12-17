@@ -60,6 +60,8 @@ public class Game extends Application {
         });
 
         controllerGame1 = (Game1Controller) fxmlLoaderGame1.getController();
+        controllerGame1.finishLine.setHeight(Entity.Y_MAX);
+        controllerGame1.finishLine.setX(Entity.X_MAX - controllerGame1.finishLine.getWidth()/2);
 
         sceneGame1.setOnKeyReleased(event -> {
             switch (event.getCode()) {
@@ -108,7 +110,9 @@ public class Game extends Application {
 
     // Display the remaining time (seconds).
     public void updateTimer(double remaining) {
-        controllerGame1.labelTimer.setText(String.format("%02d:%02d", (int) Math.floor(remaining / 60), (int) Math.floor(remaining % 60)));
+        if (remaining >= 0) {
+            controllerGame1.labelTimer.setText(String.format("%02d:%02d", (int) Math.floor(remaining / 60), (int) Math.floor(remaining % 60)));
+        }
     }
 
     public void updatePlayerNumber(int number) {
