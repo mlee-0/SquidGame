@@ -25,23 +25,19 @@ public class Player extends Entity {
         this.maxSpeed = maxSpeed;
         this.computer = computer;
         sprite = new Circle(x, y, 5);
-        sprite.setFill(Paint.valueOf("#009FBF"));
-        sprite.setStroke(Paint.valueOf("#006A7F"));
-        sprite.setStrokeWidth(1);
+        sprite.setFill(Paint.valueOf(Colors.PLAYER));
+        sprite.setStroke(Paint.valueOf(computer ? Colors.PLAYER_DARK : Colors.BLACK));
+        sprite.setStrokeWidth(computer ? 1 : 2);
     }
 
     public Shape getSprite() {
         return sprite;
     }
-
     public boolean isPlaying() { return playing; }
-
     public boolean isTargeted() { return targeted; }
-
     public boolean isComputer() {
         return computer;
     }
-
     public long getTimeKill() { return timeKill; }
 
     public void setMoveX(int direction) {
@@ -57,23 +53,8 @@ public class Player extends Entity {
         setMoveY(0);
     }
 
-    public void move(long now) {
-        // Keep in bounds.
-        if (x < X_MIN) {
-            x = X_MIN;
-        }
-        if (y < Y_MIN) {
-            y = Y_MIN;
-        }
-        else if (y > Y_MAX) {
-            y = Y_MAX;
-        }
-
-        xSpeed = xDirection != 0 ? maxSpeed : 0;
-        ySpeed = yDirection != 0 ? 0.25 : 0;
-        x += xDirection * xSpeed;
-        y += yDirection * ySpeed;
-
+    public void move() {
+        super.move();
         sprite.setCenterX(x);
         sprite.setCenterY(y);
     }
@@ -88,7 +69,7 @@ public class Player extends Entity {
 
     public void stop() {
         playing = false;
-        sprite.setFill(Paint.valueOf("#BFBFBF"));
+        sprite.setFill(Paint.valueOf(Colors.GRAY));
         sprite.setStrokeWidth(0);
         System.out.println("Stopped " + String.valueOf(playerNumber));
     }
@@ -96,7 +77,7 @@ public class Player extends Entity {
     public void target(long timeKill) {
         targeted = true;
         this.timeKill = timeKill;
-        sprite.setFill(Paint.valueOf("#FF4040"));
+        sprite.setFill(Paint.valueOf(Colors.RED));
         sprite.setStrokeWidth(0);
     }
 
@@ -105,7 +86,7 @@ public class Player extends Entity {
         playing = false;
         xSpeed = 0.0;
         ySpeed = 0.0;
-        sprite.setFill(Paint.valueOf("#FFB6B6"));
+        sprite.setFill(Paint.valueOf(Colors.RED_LIGHT));
         sprite.setStrokeWidth(0);
         System.out.println("Killed " + String.valueOf(playerNumber));
     }

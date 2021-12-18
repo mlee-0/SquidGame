@@ -15,6 +15,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Game extends Application {
@@ -32,6 +33,7 @@ public class Game extends Application {
     private long prize;
 
     private Player[] players = new Player[MAX_PLAYERS];
+    private ArrayList<Guard> guards = new ArrayList<Guard>();
 
     private BorderPane rootGame1;
 
@@ -59,6 +61,7 @@ public class Game extends Application {
         });
 
         controllerGame1 = (Game1Controller) fxmlLoaderGame1.getController();
+        controllerGame1.finishLine.setFill(Paint.valueOf(Colors.PINK));
         controllerGame1.finishLine.setHeight(Entity.Y_MAX);
         controllerGame1.finishLine.setX(Entity.X_MAX - controllerGame1.finishLine.getWidth()/2);
 
@@ -114,7 +117,16 @@ public class Game extends Application {
         for (int i = 0; i < players.length; i++) {
             double speed = random.nextDouble() * 0.25 + 0.5;
             players[i] = new Player(i+1, 0, random.nextDouble() * Entity.Y_MAX, speed, i != humanPlayerNumber);
-            ((Pane) rootGame1.getCenter()).getChildren().add(players[i].getSprite());
+            controllerGame1.pane.getChildren().add(players[i].getSprite());
+        }
+        // Make human player appear on top.
+        players[humanPlayerNumber].getSprite().toFront();
+    }
+
+    public void createGuards(int count) {
+        for (int i = 0; i < count; i++) {
+            guards.add(new Guard(100,100));
+            controllerGame1.pane.getChildren().add(guards.get(guards.size()-1).getSprite());
         }
     }
 
@@ -124,9 +136,10 @@ public class Game extends Application {
         updatePrize();
         for (Player player: players) {
             if (player != null) {
-                ((Pane) rootGame1.getCenter()).getChildren().remove(player.getSprite());
+                controllerGame1.pane.getChildren().remove(player.getSprite());
             }
         }
+        guards.clear();
     }
 
     // Display the remaining time (seconds).

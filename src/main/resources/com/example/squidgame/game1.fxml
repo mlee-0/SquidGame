@@ -23,7 +23,7 @@
 
     <center>
         <Pane fx:id="pane">
-            <Rectangle fx:id="finishLine" fill="#FD287E" width="15.0">
+            <Rectangle fx:id="finishLine" width="15.0">
             </Rectangle>
         </Pane>
     </center>

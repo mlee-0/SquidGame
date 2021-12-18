@@ -31,8 +31,24 @@ public class Entity {
     protected boolean alive = true;
 
     public boolean isAlive() { return alive; }
-
     public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
-
     public double[] getLocation() { return new double[] {x, y}; }
+
+    public void move() {
+        // Keep in bounds.
+        if (x < X_MIN) {
+            x = X_MIN;
+        }
+        if (y < Y_MIN) {
+            y = Y_MIN;
+        }
+        else if (y > Y_MAX) {
+            y = Y_MAX;
+        }
+
+        xSpeed = xDirection != 0 ? maxSpeed : 0;
+        ySpeed = yDirection != 0 ? 0.25 : 0;
+        x += xDirection * xSpeed;
+        y += yDirection * ySpeed;
+    }
 }

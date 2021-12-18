@@ -90,7 +90,7 @@ public class RedLightGreenLight extends AnimationTimer {
                 }
 
                 // Increment the player's position.
-                player.move(now);
+                player.move();
                 double[] location = player.getLocation();
 
                 // Stop playing if reached the end.
@@ -106,5 +106,10 @@ public class RedLightGreenLight extends AnimationTimer {
         if (numberPlayersEliminated > 0) {
             game.eliminatePlayers(numberPlayersEliminated);
         }
+    }
+
+    public void start() {
+        super.start();
+        game.createGuards(2);
     }
 }
