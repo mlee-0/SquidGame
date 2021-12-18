@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-//import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -22,12 +21,12 @@ public class Game extends Application {
     private HelloController controllerMain;
     private Game1Controller controllerGame1;
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     private final int MAX_PLAYERS = 456;
     private final long PRIZE_INCREMENT = 100000000;
 //    private final int[] RESERVED_PLAYER_NUMBERS = {1, 67, 101, 199, 218, 240, 456};
-    private int humanNumber;
+    private int humanPlayerNumber;
 
     private int players_remaining;
     private long prize;
@@ -69,6 +68,29 @@ public class Game extends Application {
                     game1.stop();
                     stage.setScene(sceneMain);
                     System.out.println("Quitting game 1");
+                    break;
+                case LEFT:
+                case RIGHT:
+                    players[humanPlayerNumber].setMoveX(0);
+                case UP:
+                case DOWN:
+                    players[humanPlayerNumber].setMoveY(0);
+            }
+        });
+        sceneGame1.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case LEFT:
+                    players[humanPlayerNumber].setMoveX(-1);
+                    break;
+                case RIGHT:
+                    players[humanPlayerNumber].setMoveX(+1);
+                    break;
+                case UP:
+                    players[humanPlayerNumber].setMoveY(-1);
+                    break;
+                case DOWN:
+                    players[humanPlayerNumber].setMoveY(+1);
+                    break;
             }
         });
 
@@ -87,12 +109,11 @@ public class Game extends Application {
     }
 
     private void createPlayers() {
-        int humanNumber = random.nextInt(MAX_PLAYERS);
-        this.humanNumber = humanNumber;
-        updatePlayerNumber(humanNumber);
+        humanPlayerNumber = random.nextInt(MAX_PLAYERS);
+        updatePlayerNumber(humanPlayerNumber);
         for (int i = 0; i < players.length; i++) {
             double speed = random.nextDouble() * 0.25 + 0.5;
-            players[i] = new Player(i+1, 0, random.nextDouble() * Entity.Y_MAX, speed, i != humanNumber);
+            players[i] = new Player(i+1, 0, random.nextDouble() * Entity.Y_MAX, speed, i != humanPlayerNumber);
             ((Pane) rootGame1.getCenter()).getChildren().add(players[i].getSprite());
         }
     }

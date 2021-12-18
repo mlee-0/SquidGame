@@ -69,7 +69,7 @@ public class RedLightGreenLight extends AnimationTimer {
                     case RED:
                         if (player.isMoving()) {
                             if (!player.isTargeted()) {
-                                player.target(now + (long)(random.nextDouble() * (long)(duration/3)));
+                                player.target(now + (long)(random.nextDouble() * duration / 3));
                             }
                             if (random.nextFloat() < probabilityStopMoving && player.isComputer()) {
                                 player.stopMove();
@@ -78,8 +78,8 @@ public class RedLightGreenLight extends AnimationTimer {
                         break;
                     case GREEN:
                         if (!player.isMoving() && random.nextFloat() < probabilityStartMoving && player.isComputer()) {
-                            int yDirection = random.nextInt(3) - 1;
-                            player.startMove(now, 1, yDirection);
+                            player.setMoveX(1);
+                            player.setMoveY(random.nextInt(3) - 1);
                         }
                         break;
                     case TURNING:
@@ -88,6 +88,7 @@ public class RedLightGreenLight extends AnimationTimer {
                         }
                         break;
                 }
+
                 // Increment the player's position.
                 player.move(now);
                 double[] location = player.getLocation();
@@ -97,7 +98,7 @@ public class RedLightGreenLight extends AnimationTimer {
                     player.stop();
                 }
                 // Reverse the direction if at the bounds.
-                if (location[1] < Entity.Y_MIN || location[1] > Entity.Y_MAX) {
+                if (location[1] < Entity.Y_MIN || location[1] > Entity.Y_MAX && player.isComputer()) {
                     player.changeYDirection(-1);
                 }
             }

@@ -44,27 +44,29 @@ public class Player extends Entity {
 
     public long getTimeKill() { return timeKill; }
 
-    public void startMove(long now, int xDirection, int yDirection) {
-        this.xDirection = xDirection;
-        this.yDirection = yDirection;
-        if (xDirection != 0) {
-            timeStartMoveX = now;
-        }
-        if (yDirection != 0) {
-            timeStartMoveY = now;
-        }
+    public void setMoveX(int direction) {
+        xDirection = direction;
+    }
+
+    public void setMoveY(int direction) {
+        yDirection = direction;
     }
 
     public void stopMove() {
-        xDirection = 0;
-        yDirection = 0;
-        xSpeed = 0.0;
-        ySpeed = 0.0;
+        setMoveX(0);
+        setMoveY(0);
     }
 
     public void move(long now) {
+        // Keep in bounds.
         if (x < X_MIN) {
-            xDirection = 0;
+            x = X_MIN;
+        }
+        if (y < Y_MIN) {
+            y = Y_MIN;
+        }
+        else if (y > Y_MAX) {
+            y = Y_MAX;
         }
 
         xSpeed = xDirection != 0 ? maxSpeed : 0;
