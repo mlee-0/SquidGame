@@ -5,10 +5,10 @@ public class Entity {
     protected double y;
 //    protected double z = 0;
 
-    protected static final double X_MIN = 0;
-    protected static final double X_MAX = 1000;
-    protected static final double Y_MIN = 0;
-    protected static final double Y_MAX = 600;
+    protected static final double X_MIN = 10;
+    protected static final double X_MAX = 990;
+    protected static final double Y_MIN = 10;
+    protected static final double Y_MAX = 590;
 
     protected double xSpeed = 0.0;
     protected double ySpeed = 0.0;

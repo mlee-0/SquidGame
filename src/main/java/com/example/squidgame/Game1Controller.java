@@ -10,11 +10,4 @@ public class Game1Controller {
     public Pane pane;
     @FXML
     public Rectangle finishLine;
-
-    @FXML
-    public Label labelTimer;
-    @FXML
-    public Label labelPlayerNumber;
-    @FXML
-    public Label labelPrize;
 }

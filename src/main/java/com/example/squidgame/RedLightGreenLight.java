@@ -3,8 +3,8 @@ package com.example.squidgame;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class RedLightGreenLight extends AnimationTimer {
     public static final String NAME = "Red Light, Green Light";
 
     private final Game app;
-    private final BorderPane root;
+    private final VBox root;
     private final Scene scene;
     private final Game1Controller controller;
 
@@ -44,13 +44,13 @@ public class RedLightGreenLight extends AnimationTimer {
         controller.finishLine.setHeight(Entity.Y_MAX);
         controller.finishLine.setX(Entity.X_MAX - controller.finishLine.getWidth()/2);
 
-        scene = new Scene(root, Entity.X_MAX, Entity.Y_MAX);
+        scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
         scene.setOnKeyReleased(event -> {
             switch (event.getCode()) {
                 case ESCAPE:
                     stop();
                     app.setSceneMain();
-                    System.out.println("Quitting game 1");
+                    System.out.println("Quitting " + NAME);
                     break;
                 case LEFT:
                 case RIGHT:
@@ -81,6 +81,7 @@ public class RedLightGreenLight extends AnimationTimer {
     }
 
     public Scene getScene() { return scene; }
+    public VBox getRoot() { return root; }
     public Pane getPane() { return controller.pane; }
     public Game1Controller getController() { return controller; }
 
