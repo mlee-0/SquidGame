@@ -59,9 +59,7 @@ public class Player extends Entity {
         sprite.setCenterY(y);
     }
 
-    public void changeXDirection(int multiplier) {
-        xDirection *= multiplier;
-    }
+    public void changeXDirection(int multiplier) { xDirection *= multiplier; }
 
     public void changeYDirection(int multiplier) {
         yDirection *= multiplier;
@@ -71,7 +69,7 @@ public class Player extends Entity {
         playing = false;
         sprite.setFill(Paint.valueOf(Colors.GRAY));
         sprite.setStrokeWidth(0);
-        System.out.println("Stopped " + String.valueOf(playerNumber));
+        System.out.println("Stopped " + playerNumber);
     }
 
     public void target(long timeKill) {
@@ -88,6 +86,6 @@ public class Player extends Entity {
         ySpeed = 0.0;
         sprite.setFill(Paint.valueOf(Colors.RED_LIGHT));
         sprite.setStrokeWidth(0);
-        System.out.println("Killed " + String.valueOf(playerNumber));
+        System.out.println("Killed " + playerNumber);
     }
 }
