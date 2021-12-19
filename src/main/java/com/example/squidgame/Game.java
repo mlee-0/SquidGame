@@ -91,9 +91,13 @@ public class Game extends Application {
         players[humanPlayerNumber].getSprite().toFront();
     }
 
-    public void createGuard(double x, double y) {
-        guards.add(new Guard(x, y));
-        game1.getPane().getChildren().add(guards.get(guards.size()-1).getSprite());
+    public void addGuard(Guard guard) {
+        guards.add(guard);
+        addEntity(guard);
+    }
+
+    public void addEntity(Entity entity) {
+        game1.getPane().getChildren().add(entity.getSprite());
     }
 
     private void resetGame() {

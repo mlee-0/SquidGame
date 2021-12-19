@@ -1,5 +1,8 @@
 package com.example.squidgame;
 
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
@@ -30,9 +33,7 @@ public class Player extends Entity {
         sprite.setStrokeWidth(computer ? 1 : 2);
     }
 
-    public Shape getSprite() {
-        return sprite;
-    }
+    public Circle getSprite() { return sprite; }
     public boolean isPlaying() { return playing; }
     public boolean isTargeted() { return targeted; }
     public boolean isComputer() {

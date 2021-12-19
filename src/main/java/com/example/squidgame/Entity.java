@@ -1,6 +1,8 @@
 package com.example.squidgame;
 
-public class Entity {
+import javafx.scene.Node;
+
+public abstract class Entity {
     protected double x;
     protected double y;
 //    protected double z = 0;
@@ -31,6 +33,8 @@ public class Entity {
     public boolean isAlive() { return alive; }
     public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
     public double[] getLocation() { return new double[] {x, y}; }
+
+    public abstract Node getSprite();
 
     public void move() {
         // Keep in bounds.

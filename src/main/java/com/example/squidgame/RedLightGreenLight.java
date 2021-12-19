@@ -170,7 +170,8 @@ public class RedLightGreenLight extends AnimationTimer {
 
     public void start() {
         super.start();
-        app.createGuard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 50);
-        app.createGuard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 50);
+        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 50));
+        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 50));
+        app.addEntity(new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2));
     }
 }
