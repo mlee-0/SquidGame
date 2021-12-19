@@ -8,20 +8,30 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
 public class Guard extends Entity {
-    private enum Rank { CIRCLE, TRIANGLE, SQUARE }
+    public enum Rank { CIRCLE, TRIANGLE, SQUARE }
     private Rank rank;
 
     private final int SIZE = 18;
     private Circle sprite;
 
-    Guard(double x, double y) {
+    Guard(double x, double y, Rank rank) {
+        this.rank = rank;
+        String filename = "";
+        switch (this.rank) {
+            case CIRCLE:
+                filename = "guard_circle.png"; break;
+            case TRIANGLE:
+                filename = "guard_triangle.png"; break;
+            case SQUARE:
+                filename = "guard_square.png"; break;
+        }
+
         sprite = new Circle(x, y, SIZE/2);
         sprite.setFill(Paint.valueOf(Colors.BLACK));
         sprite.setStroke(Paint.valueOf(Colors.PINK));
         sprite.setStrokeWidth(3);
-        sprite.setFill(new ImagePattern(
-                new Image(getClass().getResourceAsStream("guard_square.png")), 0, 0, 1, 1, true
-        ));
+        Image image = new Image(getClass().getResourceAsStream(filename), SIZE, SIZE, false, true);
+        sprite.setFill(new ImagePattern(image, 0, 0, 1, 1, true));
     }
 
     public void move() {

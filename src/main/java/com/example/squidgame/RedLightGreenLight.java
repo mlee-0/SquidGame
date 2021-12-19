@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 
 import java.io.IOException;
@@ -12,26 +14,26 @@ import java.util.Random;
 
 public class RedLightGreenLight extends AnimationTimer {
     public static final String NAME = "Red Light, Green Light";
+    private final Random random = new Random();
+
+    public enum State { RED, GREEN, TURNING;}
+    private State state = State.RED;
+    private static final double TIME_LIMIT = 2 * 60;  // Seconds
+    private long elapsed = 0;
+    private long now;
+    private long previous;
+    private long next = Long.MAX_VALUE;
+
+    private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
+    private MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
+
+    private static final double probabilityStartMoving = 0.025;
+    private static final double probabilityStopMoving = 0.75;
 
     private final Game app;
     private final VBox root;
     private final Scene scene;
     private final Game1Controller controller;
-
-    private final Random random = new Random();
-
-    enum State { RED, GREEN, TURNING }
-
-    private State state = State.RED;
-    // Time limit (seconds).
-    private static final double TIME_LIMIT = 5 * 60;
-    long previous;
-    long elapsed = 0;
-    long timeLastLightSwitch = 0;
-    long duration = (long) 3e9;
-
-    private static final double probabilityStartMoving = 0.025;
-    private static final double probabilityStopMoving = 0.05;
 
     RedLightGreenLight(Game app) throws IOException {
         this.app = app;
@@ -78,6 +80,12 @@ public class RedLightGreenLight extends AnimationTimer {
                     break;
             }
         });
+
+        sound.setOnEndOfMedia(() -> {
+            sound.stop();
+            sound.seek(sound.getStartTime());
+            cycleState();
+        });
     }
 
     public Scene getScene() { return scene; }
@@ -87,8 +95,10 @@ public class RedLightGreenLight extends AnimationTimer {
 
     @Override
     public void handle(long now) {
+        this.now = now;
         if (previous == 0) {
             previous = now;
+            next = now + (long) 2e9;
             return;
         }
         elapsed += (now - previous);
@@ -96,23 +106,8 @@ public class RedLightGreenLight extends AnimationTimer {
         app.updateTimer(TIME_LIMIT - elapsed / 1e9);
 
         // Cycle the game state.
-        if ((now - timeLastLightSwitch) > duration) {
-            timeLastLightSwitch = now;
-            switch (state) {
-                case RED:
-                    state = State.GREEN;
-                    duration = (long) ((random.nextDouble() * 5 + 1) * 1e9);
-                    break;
-                case GREEN:
-                    state = State.TURNING;
-                    duration = (long) ((random.nextDouble() * 0.5 + 0.5) * 1e9);
-                    break;
-                case TURNING:
-                    state = State.RED;
-                    duration = (long) ((random.nextDouble() * 4 + 2) * 1e9);
-                    break;
-            }
-            System.out.println(state);
+        if (now >= next) {
+            cycleState();
         }
 
         // Process each player.
@@ -129,7 +124,7 @@ public class RedLightGreenLight extends AnimationTimer {
                     case RED:
                         if (player.isMoving()) {
                             if (!player.isTargeted()) {
-                                player.target(now + (long)(random.nextDouble() * duration / 3));
+                                player.target(now + (long)(random.nextDouble() * (next-now) / 3));
                             }
                             if (random.nextFloat() < probabilityStopMoving && player.isComputer()) {
                                 player.stopMove();
@@ -170,8 +165,31 @@ public class RedLightGreenLight extends AnimationTimer {
 
     public void start() {
         super.start();
-        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 50));
-        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 50));
-        app.addEntity(new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2));
+        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 75, Guard.Rank.CIRCLE));
+        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 75, Guard.Rank.CIRCLE));
+        app.addEntity(doll);
+    }
+
+    private void cycleState() {
+        switch (state) {
+            case RED:
+                state = State.GREEN;
+                next = Long.MAX_VALUE;  //now + (long) ((random.nextDouble() * 5 + 1) * 1e9);
+                // Play sound.
+                sound.setRate(random.nextDouble() * 2 + 1);
+                sound.play();
+                break;
+            case GREEN:
+                state = State.TURNING;
+                next = now + (long)((random.nextDouble() * 0.05 + 0.025) * 1e9);
+                doll.setState(state);
+                break;
+            case TURNING:
+                state = State.RED;
+                next = now + (long) ((random.nextDouble() * 4 + 2) * 1e9);
+                break;
+        }
+        doll.setState(state);
+        System.out.println(state);
     }
 }

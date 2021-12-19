@@ -79,6 +79,8 @@ public class Game extends Application {
     }
 
     private void createPlayers() {
+        // read occupations file
+
         humanPlayerNumber = random.nextInt(MAX_PLAYERS);
         for (int i = 0; i < players.length; i++) {
             double speed = random.nextDouble() * 0.25 + 0.5;

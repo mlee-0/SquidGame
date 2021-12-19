@@ -8,7 +8,7 @@ public abstract class Entity {
 //    protected double z = 0;
 
     protected static final double X_MIN = 10;
-    protected static final double X_MAX = 990;
+    protected static final double X_MAX = 1190;
     protected static final double Y_MIN = 10;
     protected static final double Y_MAX = 590;
 
