@@ -25,7 +25,7 @@ public class RedLightGreenLight extends AnimationTimer {
     private long next = Long.MAX_VALUE;
 
     private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
-    private MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
+    private final MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
 
     private static final double probabilityStartMoving = 0.025;
     private static final double probabilityStopMoving = 0.75;
@@ -45,6 +45,7 @@ public class RedLightGreenLight extends AnimationTimer {
         controller.finishLine.setFill(Paint.valueOf(Colors.PINK));
         controller.finishLine.setHeight(Entity.Y_MAX);
         controller.finishLine.setX(Entity.X_MAX - controller.finishLine.getWidth()/2);
+        controller.pane.getChildren().add(doll.getSprite());
 
         scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
         scene.setOnKeyReleased(event -> {
@@ -163,11 +164,17 @@ public class RedLightGreenLight extends AnimationTimer {
         }
     }
 
+    @Override
     public void start() {
         super.start();
         app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 75, Guard.Rank.CIRCLE));
         app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 75, Guard.Rank.CIRCLE));
-        app.addEntity(doll);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        sound.stop();
     }
 
     private void cycleState() {

@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -79,14 +79,31 @@ public class Game extends Application {
     }
 
     private void createPlayers() {
-        // read occupations file
+        ArrayList<String> occupations = new ArrayList<>();
+        try {
+            try (BufferedReader reader = new BufferedReader(new FileReader(
+                    String.valueOf(getClass().getResource("occupations.txt"))
+            ))) {
+                String line = reader.readLine();
+                System.out.println(line);
+                while (line != null) {
+                    occupations.add(line);
+                }
+            }
+        }
+        catch (IOException e) {
+            System.out.println(e);
+            occupations = null;
+        }
 
         humanPlayerNumber = random.nextInt(MAX_PLAYERS);
         for (int i = 0; i < players.length; i++) {
             double speed = random.nextDouble() * 0.25 + 0.5;
             double x = Entity.X_MIN;
             double y = random.nextDouble() * (Entity.Y_MAX - Entity.Y_MIN) + Entity.Y_MIN;
-            players[i] = new Player(i+1, x, y, speed, i != humanPlayerNumber);
+            int age = random.nextInt(83) + 18;
+            String occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
+            players[i] = new Player(i+1, x, y, speed, i != humanPlayerNumber, age, occupation);
             game1.getPane().getChildren().add(players[i].getSprite());
         }
         // Make human player appear on top.
@@ -95,11 +112,7 @@ public class Game extends Application {
 
     public void addGuard(Guard guard) {
         guards.add(guard);
-        addEntity(guard);
-    }
-
-    public void addEntity(Entity entity) {
-        game1.getPane().getChildren().add(entity.getSprite());
+        game1.getPane().getChildren().add(guard.getSprite());
     }
 
     private void resetGame() {
@@ -110,6 +123,11 @@ public class Game extends Application {
         for (Player player: players) {
             if (player != null) {
                 game1.getPane().getChildren().remove(player.getSprite());
+            }
+        }
+        for (Guard guard: guards) {
+            if (guard != null) {
+                game1.getPane().getChildren().remove(guard.getSprite());
             }
         }
         guards.clear();

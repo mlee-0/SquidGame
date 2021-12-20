@@ -21,12 +21,14 @@ public class Player extends Entity {
 
     private Circle sprite;
 
-    Player(int playerNumber, double x, double y, double maxSpeed, boolean computer) {
+    Player(int playerNumber, double x, double y, double maxSpeed, boolean computer, int age, String occupation) {
         this.playerNumber = playerNumber;
         this.x = x;
         this.y = y;
         this.maxSpeed = maxSpeed;
         this.computer = computer;
+        this.age = age;
+        this.occupation = occupation;
         sprite = new Circle(x, y, 5);
         sprite.setFill(Paint.valueOf(Colors.PLAYER));
         sprite.setStroke(Paint.valueOf(computer ? Colors.PLAYER_DARK : Colors.BLACK));
@@ -88,5 +90,10 @@ public class Player extends Entity {
         sprite.setFill(Paint.valueOf(Colors.RED_LIGHT));
         sprite.setStrokeWidth(0);
         System.out.println("Killed " + playerNumber);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Player %d, %s", playerNumber, occupation);
     }
 }
