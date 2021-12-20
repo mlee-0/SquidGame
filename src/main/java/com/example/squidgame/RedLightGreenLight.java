@@ -18,7 +18,7 @@ public class RedLightGreenLight extends AnimationTimer {
 
     public enum State { RED, GREEN, TURNING;}
     private State state = State.RED;
-    private static final double TIME_LIMIT = 2 * 60;  // Seconds
+    private static final long TIME_LIMIT = (long) (2 * 60 * 1e9);  // Seconds
     private long elapsed = 0;
     private long now;
     private long previous;
@@ -31,15 +31,20 @@ public class RedLightGreenLight extends AnimationTimer {
     private static final double probabilityStopMoving = 0.75;
 
     private final Game app;
-    private final VBox root;
+    private VBox root;
     private final Scene scene;
     private final Game1Controller controller;
 
-    RedLightGreenLight(Game app) throws IOException {
+    RedLightGreenLight(Game app) {
         this.app = app;
 
         FXMLLoader fxmlLoaderGame1 = new FXMLLoader(getClass().getResource("game1.fxml"));
-        root = fxmlLoaderGame1.load();
+        try {
+            root = fxmlLoaderGame1.load();
+        }
+        catch (IOException e) {
+            root = new VBox();
+        }
         root.setStyle("-fx-background-color: #FFEABF");
         controller = fxmlLoaderGame1.getController();
         controller.finishLine.setFill(Paint.valueOf(Colors.PINK));
@@ -104,10 +109,10 @@ public class RedLightGreenLight extends AnimationTimer {
         }
         elapsed += (now - previous);
         previous = now;
-        app.updateTimer(TIME_LIMIT - elapsed / 1e9);
+        app.updateTimer((TIME_LIMIT - elapsed) / 1e9);
 
         // Cycle the game state.
-        if (now >= next) {
+        if (now >= next && elapsed < TIME_LIMIT) {
             cycleState();
         }
 
@@ -119,6 +124,10 @@ public class RedLightGreenLight extends AnimationTimer {
                 if (now >= player.getTimeKill()) {
                     player.kill();
                     numberPlayersEliminated += 1;
+                }
+                // Target remaining players after game ends.
+                if (elapsed > TIME_LIMIT && !player.isTargeted()) {
+                    player.target(now + (long)(random.nextDouble() * 5e9));
                 }
 
                 switch (state) {

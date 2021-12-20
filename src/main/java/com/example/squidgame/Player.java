@@ -38,9 +38,7 @@ public class Player extends Entity {
     public Circle getSprite() { return sprite; }
     public boolean isPlaying() { return playing; }
     public boolean isTargeted() { return targeted; }
-    public boolean isComputer() {
-        return computer;
-    }
+    public boolean isComputer() { return computer; }
     public long getTimeKill() { return timeKill; }
 
     public void setMoveX(int direction) {

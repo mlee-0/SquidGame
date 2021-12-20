@@ -2,10 +2,7 @@ package com.example.squidgame;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -42,11 +39,11 @@ public class Game extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("squidgame-view.fxml"));
         VBox rootMain = fxmlLoader.load();
         sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
-        game1 = new RedLightGreenLight(this);
-//        game1.getRoot().setFillWidth(true);
         controllerMain = fxmlLoader.getController();
         controllerMain.buttonMode1.setText(RedLightGreenLight.NAME);
         controllerMain.buttonMode1.setOnAction(event -> {
+            game1 = new RedLightGreenLight(this);
+            game1.getRoot().getChildren().add(0, dashboard);
             resetGame();
             createPlayers();
             game1.start();
@@ -57,7 +54,6 @@ public class Game extends Application {
         dashboard = fxmlLoaderDashboard.load();
         dashboard.setStyle("-fx-background-color: " + Colors.BLACK);
         controllerDashboard = fxmlLoaderDashboard.getController();
-        game1.getRoot().getChildren().add(0, dashboard);
 
         stage.setTitle("Squid Game");
         stage.setScene(sceneMain);
