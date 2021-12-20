@@ -11,8 +11,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Game extends Application {
-    private HelloController controllerMain;
+public class Main extends Application {
+    private MainController controllerMain;
     private Stage stage;
     private Scene sceneMain;
     private RedLightGreenLight game1;
@@ -36,7 +36,7 @@ public class Game extends Application {
     public void start(Stage stage) throws IOException {
         this.stage = stage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("squidgame-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
         VBox rootMain = fxmlLoader.load();
         sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
         controllerMain = fxmlLoader.getController();
@@ -77,14 +77,16 @@ public class Game extends Application {
     private void createPlayers() {
         ArrayList<String> occupations = new ArrayList<>();
         try {
-            try (BufferedReader reader = new BufferedReader(new FileReader(
-                    String.valueOf(getClass().getResource("occupations.txt"))
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    getClass().getResourceAsStream("occupations.txt")
             ))) {
-                String line = reader.readLine();
-                System.out.println(line);
-                while (line != null) {
-                    occupations.add(line);
-                }
+                String line;
+                do {
+                    line = reader.readLine();
+                    if (line != null && line.length() > 0) {
+                        occupations.add(line);
+                    }
+                } while (line != null);
             }
         }
         catch (IOException e) {

@@ -2,9 +2,8 @@ package com.example.squidgame;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 
-public class HelloController {
+public class MainController {
     @FXML
     public Button buttonMode1;
 }

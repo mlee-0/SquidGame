@@ -16,7 +16,7 @@ public class RedLightGreenLight extends AnimationTimer {
     public static final String NAME = "Red Light, Green Light";
     private final Random random = new Random();
 
-    public enum State { RED, GREEN, TURNING;}
+    public enum State { RED, GREEN, TURNING }
     private State state = State.RED;
     private static final long TIME_LIMIT = (long) (2 * 60 * 1e9);  // Seconds
     private long elapsed = 0;
@@ -30,12 +30,12 @@ public class RedLightGreenLight extends AnimationTimer {
     private static final double probabilityStartMoving = 0.025;
     private static final double probabilityStopMoving = 0.75;
 
-    private final Game app;
+    private final Main app;
     private VBox root;
     private final Scene scene;
     private final Game1Controller controller;
 
-    RedLightGreenLight(Game app) {
+    RedLightGreenLight(Main app) {
         this.app = app;
 
         FXMLLoader fxmlLoaderGame1 = new FXMLLoader(getClass().getResource("game1.fxml"));
