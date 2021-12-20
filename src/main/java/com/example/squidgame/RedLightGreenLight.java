@@ -27,9 +27,6 @@ public class RedLightGreenLight extends AnimationTimer {
     private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
     private final MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
 
-    private static final double probabilityStartMoving = 0.025;
-    private static final double probabilityStopMoving = 0.75;
-
     private final Main app;
     private VBox root;
     private final Scene scene;
@@ -120,41 +117,45 @@ public class RedLightGreenLight extends AnimationTimer {
         int numberPlayersEliminated = 0;
         for (Player player: app.getPlayers()) {
             if (player.isAlive() && player.isPlaying()) {
-                // Kill the player if enough time has elapsed.
-                if (now >= player.getTimeKill()) {
+                // Perform any scheduled actions if enough time has elapsed.
+                if (player.isScheduledStartMove() && now >= player.getTimeStartMove()) {
+                    player.setMoveX(1);
+                    player.setMoveY(random.nextInt(3) - 1);
+                }
+                if (player.isScheduledStopMove() && now >= player.getTimeStopMove()) {
+                    player.stopMove();
+                }
+                if (player.isScheduledKill() && now >= player.getTimeKill()) {
                     player.kill();
                     numberPlayersEliminated += 1;
                 }
-                // Target remaining players after game ends.
-                if (elapsed > TIME_LIMIT && !player.isTargeted()) {
-                    player.target(now + (long)(random.nextDouble() * 5e9));
+                // Schedule killing for remaining players after game ends.
+                if (elapsed > TIME_LIMIT) {
+                    player.scheduleKill(now + (long)(random.nextDouble() * 5e9));
                 }
 
                 switch (state) {
                     case RED:
                         if (player.isMoving()) {
-                            if (!player.isTargeted()) {
-                                player.target(now + (long)(random.nextDouble() * (next-now) / 3));
-                            }
-                            if (random.nextFloat() < probabilityStopMoving && player.isComputer()) {
-                                player.stopMove();
-                            }
+                            player.scheduleKill(now + (long)(random.nextDouble() * (next-now) / 3.0));
+//                            if (player.isMoving() && player.isComputer()) {
+//                                player.scheduleStopMove(now + (long)(random.nextDouble() * 1e9));
+//                            }
                         }
                         break;
                     case GREEN:
-                        if (!player.isMoving() && random.nextFloat() < probabilityStartMoving && player.isComputer()) {
-                            player.setMoveX(1);
-                            player.setMoveY(random.nextInt(3) - 1);
+                        if (!player.isMoving() && player.isComputer()) {
+                            player.scheduleStartMove(now + (long)(random.nextDouble() * 1e9));
                         }
                         break;
                     case TURNING:
-                        if (player.isMoving() && random.nextFloat() < probabilityStopMoving && player.isComputer()) {
-                            player.stopMove();
+                        if (player.isMoving() && player.isComputer()) {
+                            player.scheduleStopMove(now + (long)(random.nextDouble() * (1.0/60.0) * 1e9));
                         }
                         break;
                 }
 
-                // Increment the player's position.
+                // Update the player's position.
                 player.move();
                 double[] location = player.getLocation();
 
@@ -192,17 +193,17 @@ public class RedLightGreenLight extends AnimationTimer {
                 state = State.GREEN;
                 next = Long.MAX_VALUE;  //now + (long) ((random.nextDouble() * 5 + 1) * 1e9);
                 // Play sound.
-                sound.setRate(random.nextDouble() * 2 + 1);
+                sound.setRate(random.nextDouble() * 2.0 + 1.0);
                 sound.play();
                 break;
             case GREEN:
                 state = State.TURNING;
-                next = now + (long)((random.nextDouble() * 0.05 + 0.025) * 1e9);
+                next = now + (long)((3.0/60.0) * 1e9);
                 doll.setState(state);
                 break;
             case TURNING:
                 state = State.RED;
-                next = now + (long) ((random.nextDouble() * 4 + 2) * 1e9);
+                next = now + (long) ((random.nextDouble() * 4.0 + 2.0) * 1e9);
                 break;
         }
         doll.setState(state);
