@@ -1,7 +1,9 @@
 package com.example.squidgame;
 
+import javafx.animation.PauseTransition;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 public class Player extends Entity {
     private final int playerNumber;
@@ -88,7 +90,7 @@ public class Player extends Entity {
         playing = false;
         sprite.setFill(Paint.valueOf(Colors.GRAY));
         sprite.setStrokeWidth(0);
-        System.out.println("Stopped " + playerNumber);
+        System.out.printf("Stopped %d\n", playerNumber);
     }
 
     public void scheduleKill(long time) {
@@ -106,9 +108,13 @@ public class Player extends Entity {
         scheduledKill = false;
         xSpeed = 0.0;
         ySpeed = 0.0;
-        sprite.setFill(Paint.valueOf(Colors.RED_LIGHT));
-        sprite.setStrokeWidth(0);
-        System.out.println("Killed " + playerNumber);
+        PauseTransition animation = new PauseTransition(Duration.seconds(0.0));
+        animation.setOnFinished(event -> {
+            sprite.setFill(Paint.valueOf(Colors.RED_LIGHT));
+            sprite.setStrokeWidth(0);
+        });
+        animation.play();
+        System.out.printf("Killed %d\n", playerNumber);
     }
 
     @Override

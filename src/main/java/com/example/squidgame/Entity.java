@@ -32,7 +32,8 @@ public abstract class Entity {
 
     public boolean isAlive() { return alive; }
     public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
-    public double[] getLocation() { return new double[] {x, y}; }
+    public double getXLocation() { return x; }
+    public double getYLocation() { return y; }
 
     public abstract Node getSprite();
 
