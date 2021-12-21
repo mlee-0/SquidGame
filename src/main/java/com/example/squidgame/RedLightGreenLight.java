@@ -120,7 +120,7 @@ public class RedLightGreenLight extends AnimationTimer {
                 // Perform any scheduled actions if enough time has elapsed.
                 if (player.isScheduledStartMove() && now >= player.getTimeStartMove()) {
                     player.setMoveX(1);
-                    player.setMoveY(random.nextInt(3) - 1);
+                    player.setMoveY(random.nextInt(-1, 2));
                 }
                 if (player.isScheduledStopMove() && now >= player.getTimeStopMove()) {
                     player.stopMove();
@@ -130,27 +130,24 @@ public class RedLightGreenLight extends AnimationTimer {
                     numberPlayersEliminated += 1;
                 }
                 // Schedule killing for remaining players after game ends.
-                if (elapsed > TIME_LIMIT) {
-                    player.scheduleKill(now + (long)(random.nextDouble() * 5e9));
+                if (elapsed >= TIME_LIMIT) {
+                    player.scheduleKill(now + random.nextLong((long)5e9));
                 }
 
                 switch (state) {
                     case RED:
-                        if (player.isMoving()) {
-                            player.scheduleKill(now + (long)(random.nextDouble() * (next-now) / 3.0));
-//                            if (player.isMoving() && player.isComputer()) {
-//                                player.scheduleStopMove(now + (long)(random.nextDouble() * 1e9));
-//                            }
+                        if (player.isMoving() && !player.isScheduledKill()) {
+                            player.scheduleKill(now + random.nextLong((long)((next - now)/2.0)));
                         }
                         break;
                     case GREEN:
-                        if (!player.isMoving() && player.isComputer()) {
-                            player.scheduleStartMove(now + (long)(random.nextDouble() * 1e9));
+                        if (player.isComputer() && !player.isScheduledStartMove()) {
+                            player.scheduleStartMove(now + random.nextLong((long)1e9));
                         }
                         break;
                     case TURNING:
-                        if (player.isMoving() && player.isComputer()) {
-                            player.scheduleStopMove(now + (long)(random.nextDouble() * (1.0/60.0) * 1e9));
+                        if (player.isComputer() && !player.isScheduledStopMove()) {
+                            player.scheduleStopMove(now + random.nextLong((long)((1.0/60.0) * 1e9)));
                         }
                         break;
                 }
@@ -191,7 +188,7 @@ public class RedLightGreenLight extends AnimationTimer {
         switch (state) {
             case RED:
                 state = State.GREEN;
-                next = Long.MAX_VALUE;  //now + (long) ((random.nextDouble() * 5 + 1) * 1e9);
+                next = Long.MAX_VALUE;
                 // Play sound.
                 sound.setRate(random.nextDouble() * 2.0 + 1.0);
                 sound.play();
@@ -203,7 +200,7 @@ public class RedLightGreenLight extends AnimationTimer {
                 break;
             case TURNING:
                 state = State.RED;
-                next = now + (long) ((random.nextDouble() * 4.0 + 2.0) * 1e9);
+                next = now + random.nextLong((long)2e9, (long)6e9);
                 break;
         }
         doll.setState(state);
