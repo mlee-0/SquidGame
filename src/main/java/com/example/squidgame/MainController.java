@@ -5,5 +5,5 @@ import javafx.scene.control.Button;
 
 public class MainController {
     @FXML
-    public Button buttonMode1;
+    public Button buttonPlay;
 }

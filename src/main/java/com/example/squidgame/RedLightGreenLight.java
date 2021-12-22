@@ -132,6 +132,7 @@ public class RedLightGreenLight extends AnimationTimer {
                 }
                 if (player.isScheduledKill() && now >= player.getTimeKill()) {
                     player.kill();
+                    app.getControllerPlayerboard().board.getChildren().remove(player.getPlayerboardButton());
                     numberPlayersEliminated += 1;
                 }
                 // Schedule killing for remaining players after game ends.

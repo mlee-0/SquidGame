@@ -1,8 +1,12 @@
 package com.example.squidgame;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,13 +16,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application {
-    private MainController controllerMain;
     private Stage stage;
     private Scene sceneMain;
     private RedLightGreenLight game1;
 
-    private GridPane dashboard;
     private DashboardController controllerDashboard;
+    private PlayerboardController controllerPlayerboard;
 
     private final Random random = new Random();
 
@@ -36,35 +39,53 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         this.stage = stage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
-        VBox rootMain = fxmlLoader.load();
-        sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
-        controllerMain = fxmlLoader.getController();
-        controllerMain.buttonMode1.setText(RedLightGreenLight.NAME);
-        controllerMain.buttonMode1.setOnAction(event -> {
+        FXMLLoader fxmlLoaderDashboard = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+        GridPane dashboard = fxmlLoaderDashboard.load();
+        dashboard.setStyle("-fx-background-color: " + Colors.BLACK);
+        controllerDashboard = fxmlLoaderDashboard.getController();
+
+        FXMLLoader fxmlLoaderPlayerboard = new FXMLLoader(getClass().getResource("playerboard.fxml"));
+        HBox playerboard = fxmlLoaderPlayerboard.load();
+        Scene scenePlayerboard = new Scene(playerboard, 400, 600);
+        controllerPlayerboard = fxmlLoaderPlayerboard.getController();
+        controllerPlayerboard.buttonContinue.setOnAction(event -> {
             game1 = new RedLightGreenLight(this);
             game1.getRoot().getChildren().add(0, dashboard);
-            resetGame();
-            createPlayers();
+            for (Player player: players) {
+                game1.getPane().getChildren().add(player.getSprite());
+            }
             game1.start();
             stage.setScene(game1.getScene());
         });
 
-        FXMLLoader fxmlLoaderDashboard = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-        dashboard = fxmlLoaderDashboard.load();
-        dashboard.setStyle("-fx-background-color: " + Colors.BLACK);
-        controllerDashboard = fxmlLoaderDashboard.getController();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
+        VBox rootMain = fxmlLoader.load();
+        sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
+        MainController controllerMain = fxmlLoader.getController();
+        controllerMain.buttonPlay.setText("Play");
+        controllerMain.buttonPlay.setOnAction(event -> {
+            stage.setScene(scenePlayerboard);
+            resetGame();
+            createPlayers();
+        });
 
         stage.setTitle("Squid Game");
         stage.setScene(sceneMain);
         stage.show();
     }
 
+    public static void main(String[] args) {
+        launch();
+    }
+
+    public DashboardController getControllerDashboard() { return controllerDashboard; }
+    public PlayerboardController getControllerPlayerboard() { return controllerPlayerboard; }
+
     public void setSceneMain() {
         stage.setScene(sceneMain);
     }
-
     public Player[] getPlayers() { return players; }
+
     public Player getHumanPlayer() { return players[humanPlayerNumber]; }
 
     public void eliminatePlayers(int count) {
@@ -76,24 +97,26 @@ public class Main extends Application {
 
     private void createPlayers() {
         ArrayList<String> occupations = new ArrayList<>();
-        try {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    getClass().getResourceAsStream("occupations.txt")
-            ))) {
-                String line;
-                do {
-                    line = reader.readLine();
-                    if (line != null && line.length() > 0) {
-                        occupations.add(line);
-                    }
-                } while (line != null);
+        InputStream input = getClass().getResourceAsStream("occupations.txt");
+        if (input != null) {
+            try {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+                    String line;
+                    do {
+                        line = reader.readLine();
+                        if (line != null && line.length() > 0) {
+                            occupations.add(line);
+                        }
+                    } while (line != null);
+                }
+            }
+            catch (IOException e) {
+                occupations = null;
             }
         }
-        catch (IOException e) {
-            System.out.println(e);
-            occupations = null;
-        }
 
+        ObservableList<Node> children = controllerPlayerboard.board.getChildren();
+        children.remove(0, children.size());
         humanPlayerNumber = random.nextInt(MAX_PLAYERS);
         for (int i = 0; i < players.length; i++) {
             double speed = random.nextDouble(0.5, 1.0);
@@ -101,8 +124,29 @@ public class Main extends Application {
             double y = random.nextDouble(Entity.Y_MIN, Entity.Y_MIN + (Entity.Y_MAX - Entity.Y_MIN));
             int age = random.nextInt(18, 101);
             String occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
-            players[i] = new Player(i+1, x, y, speed, i != humanPlayerNumber, age, occupation);
-            game1.getPane().getChildren().add(players[i].getSprite());
+            Player player = new Player(i+1, x, y, speed, i != humanPlayerNumber, age, occupation);
+            players[i] = player;
+
+            // Add players to player board.
+            int row = i / 24;
+            int column = i % 24;
+            Button button = new Button(player.getPlayerNumber());
+            button.setStyle("-fx-padding: 1.0"); // -fx-background-color: #000; -fx-text-fill: #808080");
+            button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            button.setOnAction(event -> {
+                controllerPlayerboard.labelNumber.setText(
+                        String.format("Player %s", player.getPlayerNumber())
+                );
+                controllerPlayerboard.labelName.setText(player.getName());
+                controllerPlayerboard.labelAge.setText(String.valueOf(player.getAge()));
+                controllerPlayerboard.labelOccupation.setText(player.getOccupation());
+            });
+            controllerPlayerboard.board.add(button, column, row);
+            player.setPlayerboardButton(button);
+            // Display the human player initially.
+            if (i == humanPlayerNumber) {
+                button.fire();
+            }
         }
     }
 
@@ -142,9 +186,5 @@ public class Main extends Application {
 
     public void updatePrize() {
         controllerDashboard.labelPrize.setText(String.format("₩%,d", prize));
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }
