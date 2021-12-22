@@ -1,6 +1,9 @@
 package com.example.squidgame;
 
+import javafx.animation.Animation;
+import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
@@ -22,6 +25,7 @@ public class Player extends Entity {
     private boolean scheduledStopMove = false;
 
     private Circle sprite;
+    private FillTransition humanAnimation;
 
     Player(int playerNumber, double x, double y, double maxSpeed, boolean computer, int age, String occupation) {
         this.playerNumber = playerNumber;
@@ -35,6 +39,16 @@ public class Player extends Entity {
         sprite.setFill(Paint.valueOf(Colors.PLAYER));
         sprite.setStroke(Paint.valueOf(computer ? Colors.PLAYER_DARK : Colors.BLACK));
         sprite.setStrokeWidth(computer ? 1 : 2);
+        sprite.setOpacity(0.9);
+        // Create an animation if a human player.
+        if (!computer) {
+            humanAnimation = new FillTransition(
+                    Duration.seconds(0.5), sprite, Color.web(Colors.PLAYER_LIGHT), Color.web(Colors.PLAYER)
+                    );
+            humanAnimation.setCycleCount(Animation.INDEFINITE);
+            humanAnimation.setAutoReverse(true);
+            humanAnimation.play();
+        }
     }
 
     public Circle getSprite() { return sprite; }
@@ -88,6 +102,9 @@ public class Player extends Entity {
 
     public void stop() {
         playing = false;
+        if (!computer) {
+            humanAnimation.stop();
+        }
         sprite.setFill(Paint.valueOf(Colors.GRAY));
         sprite.setStrokeWidth(0);
         System.out.printf("Stopped %d\n", playerNumber);
@@ -97,6 +114,9 @@ public class Player extends Entity {
         if (!scheduledKill) {
             timeKill = time;
             scheduledKill = true;
+            if (!computer) {
+                humanAnimation.stop();
+            }
             sprite.setFill(Paint.valueOf(Colors.RED));
             sprite.setStrokeWidth(0);
         }
@@ -108,12 +128,15 @@ public class Player extends Entity {
         scheduledKill = false;
         xSpeed = 0.0;
         ySpeed = 0.0;
-        PauseTransition animation = new PauseTransition(Duration.seconds(0.0));
-        animation.setOnFinished(event -> {
+        if (!computer) {
+            humanAnimation.stop();
+        }
+        PauseTransition killAnimation = new PauseTransition(Duration.millis(1));
+        killAnimation.setOnFinished(event -> {
             sprite.setFill(Paint.valueOf(Colors.RED_LIGHT));
             sprite.setStrokeWidth(0);
         });
-        animation.play();
+        killAnimation.play();
         System.out.printf("Killed %d\n", playerNumber);
     }
 

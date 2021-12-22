@@ -96,16 +96,14 @@ public class Main extends Application {
 
         humanPlayerNumber = random.nextInt(MAX_PLAYERS);
         for (int i = 0; i < players.length; i++) {
-            double speed = random.nextDouble() * 0.25 + 0.5;
+            double speed = random.nextDouble(0.5, 1.0);
             double x = Entity.X_MIN;
-            double y = random.nextDouble() * (Entity.Y_MAX - Entity.Y_MIN) + Entity.Y_MIN;
-            int age = random.nextInt(83) + 18;
+            double y = random.nextDouble(Entity.Y_MIN, Entity.Y_MIN + (Entity.Y_MAX - Entity.Y_MIN));
+            int age = random.nextInt(18, 101);
             String occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
             players[i] = new Player(i+1, x, y, speed, i != humanPlayerNumber, age, occupation);
             game1.getPane().getChildren().add(players[i].getSprite());
         }
-        // Make human player appear on top.
-        players[humanPlayerNumber].getSprite().toFront();
     }
 
     public void addGuard(Guard guard) {

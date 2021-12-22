@@ -111,8 +111,10 @@ public class RedLightGreenLight extends AnimationTimer {
         app.updateTimer((TIME_LIMIT - elapsed) / 1e9);
 
         // Cycle the game state.
-        if (now >= next && elapsed < TIME_LIMIT) {
-            cycleState();
+        if (elapsed < TIME_LIMIT) {
+            if (now >= next) {
+                cycleState();
+            }
         }
         else {
             state = State.RED;
@@ -185,6 +187,9 @@ public class RedLightGreenLight extends AnimationTimer {
         super.start();
         app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 75, Guard.Rank.CIRCLE));
         app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 75, Guard.Rank.CIRCLE));
+        // Make doll and human player appear in front.
+        doll.getSprite().toFront();
+        app.getHumanPlayer().getSprite().toFront();
     }
 
     @Override
