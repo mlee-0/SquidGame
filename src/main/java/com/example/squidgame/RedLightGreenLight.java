@@ -56,7 +56,6 @@ public class RedLightGreenLight extends AnimationTimer {
             switch (event.getCode()) {
                 case ESCAPE:
                     stop();
-                    app.setSceneMain();
                     System.out.printf("Quitting %s\n", NAME);
                     break;
                 case LEFT:
@@ -181,6 +180,9 @@ public class RedLightGreenLight extends AnimationTimer {
         if (numberPlayersEliminated > 0) {
             app.eliminatePlayers(numberPlayersEliminated);
         }
+        if (app.getPlayingPlayers() <= 0) {
+            stop();
+        }
     }
 
     @Override
@@ -197,6 +199,7 @@ public class RedLightGreenLight extends AnimationTimer {
     public void stop() {
         super.stop();
         sound.stop();
+        app.setScenePlayerboard();
     }
 
     private void cycleState() {

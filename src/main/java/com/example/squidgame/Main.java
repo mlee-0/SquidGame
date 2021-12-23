@@ -22,6 +22,7 @@ public class Main extends Application {
 
     private DashboardController controllerDashboard;
     private PlayerboardController controllerPlayerboard;
+    Scene scenePlayerboard;
 
     private final Random random = new Random();
 
@@ -46,16 +47,16 @@ public class Main extends Application {
 
         FXMLLoader fxmlLoaderPlayerboard = new FXMLLoader(getClass().getResource("playerboard.fxml"));
         HBox playerboard = fxmlLoaderPlayerboard.load();
-        Scene scenePlayerboard = new Scene(playerboard, 400, 600);
+        scenePlayerboard = new Scene(playerboard, 600, 400);
         controllerPlayerboard = fxmlLoaderPlayerboard.getController();
-        controllerPlayerboard.buttonContinue.setOnAction(event -> {
+        controllerPlayerboard.buttonNext.setOnAction(event -> {
             game1 = new RedLightGreenLight(this);
             game1.getRoot().getChildren().add(0, dashboard);
             for (Player player: players) {
                 game1.getPane().getChildren().add(player.getSprite());
             }
             game1.start();
-            stage.setScene(game1.getScene());
+            setSceneGame(game1.getScene());
         });
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
@@ -81,11 +82,19 @@ public class Main extends Application {
     public DashboardController getControllerDashboard() { return controllerDashboard; }
     public PlayerboardController getControllerPlayerboard() { return controllerPlayerboard; }
 
-    public void setSceneMain() {
-        stage.setScene(sceneMain);
-    }
+    public void setSceneMain() { stage.setScene(sceneMain); }
+    public void setScenePlayerboard() { stage.setScene(scenePlayerboard);}
+    public void setSceneGame(Scene scene) { stage.setScene(scene); }
     public Player[] getPlayers() { return players; }
-
+    public int getPlayingPlayers() {
+        int count = 0;
+        for (Player player: players) {
+            if (player.isPlaying()) {
+                count += 1;
+            }
+        }
+        return count;
+    }
     public Player getHumanPlayer() { return players[humanPlayerNumber]; }
 
     public void eliminatePlayers(int count) {
@@ -131,7 +140,7 @@ public class Main extends Application {
             int row = i / 24;
             int column = i % 24;
             Button button = new Button(player.getPlayerNumber());
-            button.setStyle("-fx-padding: 1.0"); // -fx-background-color: #000; -fx-text-fill: #808080");
+            button.setStyle("-fx-padding: 2.0"); // -fx-background-color: #000; -fx-text-fill: #808080");
             button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             button.setOnAction(event -> {
                 controllerPlayerboard.labelNumber.setText(

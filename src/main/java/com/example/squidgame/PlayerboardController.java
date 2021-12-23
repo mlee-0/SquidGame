@@ -17,5 +17,5 @@ public class PlayerboardController {
     @FXML
     public Label labelOccupation;
     @FXML
-    public Button buttonContinue;
+    public Button buttonNext;
 }

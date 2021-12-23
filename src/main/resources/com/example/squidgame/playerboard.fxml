@@ -21,51 +21,51 @@
     <GridPane fx:id="board" hgap="5.0" vgap="5.0" style="-fx-font-size: 15"/>
 
     <VBox spacing="20.0">
-        <GridPane hgap="5.0" vgap="5.0" style="-fx-font-size: 15">
+        <GridPane hgap="10.0" vgap="5.0" style="-fx-font-size: 15">
             <Label
-                    fx:id="labelNumber" text=""
+                    fx:id="labelNumber"
                     alignment="BASELINE_CENTER"
                     style="-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: #fff"
                     GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"
             />
             <Label
                 text="Name:"
-                alignment="BASELINE_LEFT"
+                GridPane.halignment="LEFT"
                 style="-fx-text-fill: #fff"
                 GridPane.rowIndex="1" GridPane.columnIndex="0"
             />
             <Label
                     fx:id="labelName"
-                    text="John Doe"
-                    alignment="BASELINE_RIGHT"
+                    GridPane.halignment="RIGHT"
                     style="-fx-text-fill: #fff"
                     GridPane.rowIndex="1" GridPane.columnIndex="1"
             />
             <Label
                 text="Age:"
-                alignment="BASELINE_LEFT"
+                GridPane.halignment="LEFT"
                 style="-fx-text-fill: #fff"
                 GridPane.rowIndex="2" GridPane.columnIndex="0"
             />
             <Label
-                    fx:id="labelAge" text="50"
-                    alignment="BASELINE_RIGHT"
+                    fx:id="labelAge"
+                    GridPane.halignment="RIGHT"
                     style="-fx-text-fill: #fff"
                     GridPane.rowIndex="2" GridPane.columnIndex="1"
             />
             <Label
                 text="Occupation:"
-                alignment="BASELINE_LEFT"
+                GridPane.halignment="LEFT"
                 style="-fx-text-fill: #fff"
                 GridPane.rowIndex="3" GridPane.columnIndex="0"
             />
             <Label
-                    fx:id="labelOccupation" text="Clown"
-                    alignment="BASELINE_RIGHT"
+                    fx:id="labelOccupation"
+                    GridPane.halignment="RIGHT"
                     style="-fx-text-fill: #fff"
                     GridPane.rowIndex="3" GridPane.columnIndex="1"
             />
         </GridPane>
-        <Button fx:id="buttonContinue" text="Next Game" style="-fx-font-size: 30; -font-weight: bold"/>
+
+        <Button fx:id="buttonNext" text="Next Game" style="-fx-font-size: 30; -font-weight: bold"/>
     </VBox>
 </HBox>
