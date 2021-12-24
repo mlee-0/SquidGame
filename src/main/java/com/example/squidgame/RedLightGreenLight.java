@@ -12,18 +12,10 @@ import javafx.scene.paint.Paint;
 import java.io.IOException;
 import java.util.Random;
 
-public class RedLightGreenLight extends AnimationTimer {
-    public static final String NAME = "Red Light, Green Light";
-    private final Random random = new Random();
-
+public class RedLightGreenLight extends Game {
     public enum State { RED, GREEN, TURNING }
     private State state = State.RED;
-    private static final long TIME_LIMIT = (long) (2 * 60 * 1e9);  // Seconds
-    private long elapsed = 0;
-    private long now;
-    private long previous;
     private long next = Long.MAX_VALUE;
-
     private static final float PROBABILITY_STOP = 0.6f;
 
     private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
@@ -36,38 +28,23 @@ public class RedLightGreenLight extends AnimationTimer {
 
     RedLightGreenLight(Main app) {
         this.app = app;
+        NAME = "Red Light, Green Light";
+        TIME_LIMIT = (long) (2 * 60 * 1e9);
 
-        FXMLLoader fxmlLoaderGame1 = new FXMLLoader(getClass().getResource("game1.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game1.fxml"));
         try {
-            root = fxmlLoaderGame1.load();
+            root = fxmlLoader.load();
         }
         catch (IOException e) {
             root = new VBox();
         }
-        root.setStyle("-fx-background-color: #FFEABF");
-        controller = fxmlLoaderGame1.getController();
+        controller = fxmlLoader.getController();
         controller.finishLine.setFill(Paint.valueOf(Colors.PINK));
         controller.finishLine.setHeight(Entity.Y_MAX);
         controller.finishLine.setX(Entity.X_MAX - controller.finishLine.getWidth()/2);
         controller.pane.getChildren().add(doll.getSprite());
 
         scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
-        scene.setOnKeyReleased(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    stop();
-                    System.out.printf("Quitting %s\n", NAME);
-                    break;
-                case LEFT:
-                case RIGHT:
-                    app.getHumanPlayer().setMoveX(0);
-                    break;
-                case UP:
-                case DOWN:
-                    app.getHumanPlayer().setMoveY(0);
-                    break;
-            }
-        });
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case LEFT:
@@ -81,6 +58,22 @@ public class RedLightGreenLight extends AnimationTimer {
                     break;
                 case DOWN:
                     app.getHumanPlayer().setMoveY(+1);
+                    break;
+            }
+        });
+        scene.setOnKeyReleased(event -> {
+            switch (event.getCode()) {
+                case ESCAPE:
+                    stop();
+                    System.out.printf("Quitting %s\n", NAME);
+                    break;
+                case LEFT:
+                case RIGHT:
+                    app.getHumanPlayer().setMoveX(0);
+                    break;
+                case UP:
+                case DOWN:
+                    app.getHumanPlayer().setMoveY(0);
                     break;
             }
         });

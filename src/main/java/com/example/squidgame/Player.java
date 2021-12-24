@@ -11,8 +11,11 @@ import javafx.util.Duration;
 
 public class Player extends Entity {
     private final int playerNumber;
-    private boolean playing = true;
     private final boolean computer;
+
+    private boolean playing = true;
+    private boolean cutting = false;
+    private boolean licking = false;
 
     private String name = "";
     private int age;
@@ -55,8 +58,10 @@ public class Player extends Entity {
 
     public Circle getSprite() { return sprite; }
     public Button getPlayerboardButton() { return playerboardButton; }
-    public boolean isPlaying() { return playing; }
     public boolean isComputer() { return computer; }
+    public boolean isPlaying() { return playing; }
+    public void setCutting(boolean cutting) { this.cutting = cutting; }
+    public void setLicking(boolean licking) { this.licking = licking; }
     public String getPlayerNumber() { return String.format("%03d", playerNumber); }
     public String getName() { return name; }
     public int getAge() { return age; }
