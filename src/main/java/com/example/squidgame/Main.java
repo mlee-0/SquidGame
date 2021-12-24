@@ -140,12 +140,17 @@ public class Main extends Application {
             int row = i / 24;
             int column = i % 24;
             Button button = new Button(player.getPlayerNumber());
-            button.setStyle("-fx-padding: 2.0"); // -fx-background-color: #000; -fx-text-fill: #808080");
+            button.setStyle(button.getStyle() +
+                    String.format(".button {; -fx-background-color: %s; -fx-text-fill: %s; -fx-padding: 3}",
+                            i == humanPlayerNumber ? Colors.WHITE : Colors.PINK_LIGHT, Colors.PLAYER_DARK)
+            );
             button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             button.setOnAction(event -> {
-                controllerPlayerboard.labelNumber.setText(
-                        String.format("Player %s", player.getPlayerNumber())
-                );
+                String labelNumber = String.format("Player %s", player.getPlayerNumber());
+                if (!player.isComputer()) {
+                    labelNumber += " (You)";
+                }
+                controllerPlayerboard.labelNumber.setText(labelNumber);
                 controllerPlayerboard.labelName.setText(player.getName());
                 controllerPlayerboard.labelAge.setText(String.valueOf(player.getAge()));
                 controllerPlayerboard.labelOccupation.setText(player.getOccupation());

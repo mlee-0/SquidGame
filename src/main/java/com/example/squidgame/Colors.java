@@ -6,7 +6,8 @@ public class Colors {
     public static String PLAYER_LIGHT = "#00D4FF";
     public static String RED = "#FF4040";
     public static String RED_LIGHT = "#FFB6B6";
-    public static String PINK = "#FD287E";
+    public static String PINK = "#FF267E";
+    public static String PINK_LIGHT = "#FFBFD9";
 
     public static String GRAY = "#BFBFBF";
     public static String WHITE = "#FFF";
