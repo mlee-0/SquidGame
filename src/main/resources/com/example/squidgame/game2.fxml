@@ -2,8 +2,14 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
 <VBox style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.squidgame.Game2Controller">
 
-    <ImageView fx:id="pane"/>
+    <StackPane>
+        <Canvas fx:id="canvas" style="-fx-background-color: #000"/>
+        <Pane fx:id="pane"/>
+    </StackPane>
 </VBox>

@@ -38,6 +38,8 @@ public class RedLightGreenLight extends Game {
         catch (IOException e) {
             root = new VBox();
         }
+        root.getChildren().add(0, app.getDashboard());
+
         controller = fxmlLoader.getController();
         controller.finishLine.setFill(Paint.valueOf(Colors.PINK));
         controller.finishLine.setHeight(Entity.Y_MAX);

@@ -18,8 +18,12 @@ import java.util.Random;
 public class Main extends Application {
     private Stage stage;
     private Scene sceneMain;
-    private RedLightGreenLight game1;
 
+    private int gameNumber;
+    private RedLightGreenLight game1;
+    private Dalgona game2;
+
+    private GridPane dashboard;
     private DashboardController controllerDashboard;
     private PlayerboardController controllerPlayerboard;
     Scene scenePlayerboard;
@@ -41,8 +45,7 @@ public class Main extends Application {
         this.stage = stage;
 
         FXMLLoader fxmlLoaderDashboard = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-        GridPane dashboard = fxmlLoaderDashboard.load();
-        dashboard.setStyle("-fx-background-color: " + Colors.BLACK);
+        dashboard = fxmlLoaderDashboard.load();
         controllerDashboard = fxmlLoaderDashboard.getController();
 
         FXMLLoader fxmlLoaderPlayerboard = new FXMLLoader(getClass().getResource("playerboard.fxml"));
@@ -50,13 +53,22 @@ public class Main extends Application {
         scenePlayerboard = new Scene(playerboard, 600, 400);
         controllerPlayerboard = fxmlLoaderPlayerboard.getController();
         controllerPlayerboard.buttonNext.setOnAction(event -> {
-            game1 = new RedLightGreenLight(this);
-            game1.getRoot().getChildren().add(0, dashboard);
-            for (Player player: players) {
-                game1.getPane().getChildren().add(player.getSprite());
+            switch (gameNumber) {
+                case 1:
+                    game1 = new RedLightGreenLight(this);
+                    for (Player player: players) {
+                        game1.getPane().getChildren().add(player.getSprite());
+                    }
+                    game1.start();
+                    setSceneGame(game1.getScene());
+                    break;
+                case 2:
+                    game2 = new Dalgona(this);
+                    game2.getPane().getChildren().add(getHumanPlayer().getSprite());
+                    game2.start();
+                    setSceneGame(game2.getScene());
+                    break;
             }
-            game1.start();
-            setSceneGame(game1.getScene());
         });
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
@@ -79,6 +91,7 @@ public class Main extends Application {
         launch();
     }
 
+    public GridPane getDashboard() { return dashboard; }
     public DashboardController getControllerDashboard() { return controllerDashboard; }
     public PlayerboardController getControllerPlayerboard() { return controllerPlayerboard; }
 
@@ -170,6 +183,7 @@ public class Main extends Application {
     }
 
     private void resetGame() {
+        gameNumber = 2;
         remaining = MAX_PLAYERS;
         prize = 0;
         updateRemaining();

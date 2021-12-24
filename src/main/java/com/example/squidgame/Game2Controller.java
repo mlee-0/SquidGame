@@ -1,9 +1,12 @@
 package com.example.squidgame;
 
 import javafx.fxml.FXML;
-import javafx.scene.image.ImageView;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.Pane;
 
 public class Game2Controller {
     @FXML
-    public ImageView pane;
+    public Canvas canvas;
+    @FXML
+    public Pane pane;
 }
