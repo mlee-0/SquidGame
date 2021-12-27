@@ -50,7 +50,7 @@ public abstract class Entity {
         }
 
         xSpeed = xDirection != 0 ? maxSpeed : 0;
-        ySpeed = yDirection != 0 ? 0.25 : 0;
+        ySpeed = yDirection != 0 ? maxSpeed : 0;
         x += xDirection * xSpeed;
         y += yDirection * ySpeed;
     }

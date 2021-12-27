@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.Pane?>
-<VBox style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
+<?import javafx.scene.control.Button?>
+<VBox alignment="CENTER"
+      style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.squidgame.Game2Controller">
 
     <StackPane>
         <Canvas fx:id="canvas" style="-fx-background-color: #000"/>
         <Pane fx:id="pane"/>
     </StackPane>
+
+    <Button fx:id="buttonFinish" text="Finish"/>
 </VBox>

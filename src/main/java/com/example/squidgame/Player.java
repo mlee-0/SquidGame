@@ -60,6 +60,8 @@ public class Player extends Entity {
     public Button getPlayerboardButton() { return playerboardButton; }
     public boolean isComputer() { return computer; }
     public boolean isPlaying() { return playing; }
+    public boolean isCutting() { return cutting; }
+    public boolean isLicking() { return licking; }
     public void setCutting(boolean cutting) { this.cutting = cutting; }
     public void setLicking(boolean licking) { this.licking = licking; }
     public String getPlayerNumber() { return String.format("%03d", playerNumber); }

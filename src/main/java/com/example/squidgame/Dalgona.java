@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 
 import java.io.IOException;
 
@@ -15,19 +16,23 @@ public class Dalgona extends Game {
             "dalgona_circle.png", "dalgona_triangle.png", "dalgona_star.png", "dalgona_umbrella.png"
     };
     private Image image;
-    private static final int IMAGE_SIZE = 500;
+    private static final int IMAGE_SIZE = (int) (Entity.Y_MAX + Entity.Y_MIN);
+    private static final int DRAW_SIZE = 5;
     private final Canvas canvas;
-    private GraphicsContext gc;
+    private final GraphicsContext gc;
 
     private final Main app;
     private VBox root;
     private final Scene scene;
     private final Game2Controller controller;
 
+    private Player player;
+
     Dalgona(Main app) {
         this.app = app;
         NAME = "Dalgona";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
+        player = app.getHumanPlayer();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game2.fxml"));
         try {
@@ -43,6 +48,13 @@ public class Dalgona extends Game {
         canvas.setWidth(IMAGE_SIZE);
         canvas.setHeight(IMAGE_SIZE);
         gc = canvas.getGraphicsContext2D();
+        gc.setFill(Paint.valueOf(Colors.BLACK));
+        controller.pane.setMaxWidth(IMAGE_SIZE);
+        controller.pane.setMaxHeight(IMAGE_SIZE);
+        controller.buttonFinish.setFocusTraversable(false);
+        controller.buttonFinish.setOnAction(event -> {
+            checkPassed();
+        });
 
         scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
         scene.setOnKeyPressed(event -> {
@@ -95,6 +107,16 @@ public class Dalgona extends Game {
     public VBox getRoot() { return root; }
     public Pane getPane() { return controller.pane; }
 
+    public void checkPassed() {
+        boolean passed = false;
+        if (passed) {
+            stop();
+        }
+        else {
+            player.kill();
+        }
+    }
+
     @Override
     public void handle(long now) {
         this.now = now;
@@ -106,7 +128,15 @@ public class Dalgona extends Game {
         previous = now;
         app.updateTimer((TIME_LIMIT - elapsed) / 1e9);
 
-        app.getHumanPlayer().move();
+        player.move();
+        if (player.isCutting()) {
+            gc.fillOval(
+                    player.getXLocation() - DRAW_SIZE/2,
+                    player.getYLocation() - DRAW_SIZE/2,
+                    DRAW_SIZE,
+                    DRAW_SIZE
+            );
+        }
     }
 
     @Override
@@ -114,7 +144,7 @@ public class Dalgona extends Game {
         super.start();
         image = new Image(
                 getClass().getResource(files[random.nextInt(files.length)]).toExternalForm(),
-                500, 500, true, true
+                IMAGE_SIZE, IMAGE_SIZE, true, true
         );
         gc.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight());
     }

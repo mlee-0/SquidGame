@@ -122,7 +122,6 @@ public class RedLightGreenLight extends Game {
                 // Perform any scheduled actions if enough time has elapsed.
                 if (player.isScheduledStartMove() && now >= player.getTimeStartMove()) {
                     player.setMoveX(1);
-                    player.setMoveY(random.nextInt(-1, 2));
                 }
                 if (player.isScheduledKill() && now >= player.getTimeKill()) {
                     player.kill();
