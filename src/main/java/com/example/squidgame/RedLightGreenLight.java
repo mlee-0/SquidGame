@@ -1,6 +1,5 @@
 package com.example.squidgame;
 
-import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -10,7 +9,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class RedLightGreenLight extends Game {
     public enum State { RED, GREEN, TURNING }
@@ -21,24 +19,14 @@ public class RedLightGreenLight extends Game {
     private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
     private final MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
 
-    private final Main app;
-    private VBox root;
-    private final Scene scene;
     private final Game1Controller controller;
 
-    RedLightGreenLight(Main app) {
-        this.app = app;
+    RedLightGreenLight() {
         NAME = "Red Light, Green Light";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game1.fxml"));
-        try {
-            root = fxmlLoader.load();
-        }
-        catch (IOException e) {
-            root = new VBox();
-        }
-        root.getChildren().add(0, app.getDashboard());
+        setRoot(fxmlLoader);
 
         controller = fxmlLoader.getController();
         controller.finishLine.setFill(Paint.valueOf(Colors.PINK));
@@ -94,15 +82,11 @@ public class RedLightGreenLight extends Game {
 
     @Override
     public void handle(long now) {
-        this.now = now;
+        // Initial duration.
         if (previous == 0) {
-            previous = now;
             next = now + (long) 2e9;
-            return;
         }
-        elapsed += (now - previous);
-        previous = now;
-        app.updateTimer((TIME_LIMIT - elapsed) / 1e9);
+        super.handle(now);
 
         // Cycle the game state.
         if (elapsed < TIME_LIMIT) {
@@ -174,7 +158,7 @@ public class RedLightGreenLight extends Game {
         if (numberPlayersEliminated > 0) {
             app.eliminatePlayers(numberPlayersEliminated);
         }
-        if (app.getPlayingPlayers() <= 0) {
+        if (app.getPlayingPlayers().length <= 0) {
             stop();
         }
     }

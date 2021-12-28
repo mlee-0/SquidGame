@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -21,27 +22,17 @@ public class Dalgona extends Game {
     private final Canvas canvas;
     private final GraphicsContext gc;
 
-    private final Main app;
-    private VBox root;
-    private final Scene scene;
     private final Game2Controller controller;
 
     private Player player;
 
-    Dalgona(Main app) {
-        this.app = app;
+    Dalgona() {
         NAME = "Dalgona";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
         player = app.getHumanPlayer();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game2.fxml"));
-        try {
-            root = fxmlLoader.load();
-        }
-        catch (IOException e) {
-            root = new VBox();
-        }
-        root.getChildren().add(0, app.getDashboard());
+        setRoot(fxmlLoader);
 
         controller = fxmlLoader.getController();
         canvas = controller.canvas;
@@ -108,25 +99,22 @@ public class Dalgona extends Game {
     public Pane getPane() { return controller.pane; }
 
     public void checkPassed() {
+        WritableImage writableImage = new WritableImage(IMAGE_SIZE, IMAGE_SIZE);
+        canvas.snapshot(null, writableImage);
+
         boolean passed = false;
         if (passed) {
             stop();
         }
         else {
             player.kill();
+            app.eliminatePlayers(1);
         }
     }
 
     @Override
     public void handle(long now) {
-        this.now = now;
-        if (previous == 0) {
-            previous = now;
-            return;
-        }
-        elapsed += (now - previous);
-        previous = now;
-        app.updateTimer((TIME_LIMIT - elapsed) / 1e9);
+        super.handle(now);
 
         player.move();
         if (player.isCutting()) {
@@ -136,6 +124,15 @@ public class Dalgona extends Game {
                     DRAW_SIZE,
                     DRAW_SIZE
             );
+        }
+
+        if ((TIME_LIMIT - elapsed) < 600e9) {
+            if (random.nextFloat() < 0.005) {
+                Player[] playingPlayers = app.getPlayingPlayers();
+                int index = random.nextInt(playingPlayers.length);
+                playingPlayers[index].kill();
+                app.eliminatePlayers(1);
+            }
         }
     }
 

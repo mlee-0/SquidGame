@@ -43,6 +43,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
+        Game.setApp(this);
 
         FXMLLoader fxmlLoaderDashboard = new FXMLLoader(getClass().getResource("dashboard.fxml"));
         dashboard = fxmlLoaderDashboard.load();
@@ -55,7 +56,7 @@ public class Main extends Application {
         controllerPlayerboard.buttonNext.setOnAction(event -> {
             switch (gameNumber) {
                 case 1:
-                    game1 = new RedLightGreenLight(this);
+                    game1 = new RedLightGreenLight();
                     for (Player player: players) {
                         game1.getPane().getChildren().add(player.getSprite());
                     }
@@ -63,7 +64,7 @@ public class Main extends Application {
                     setSceneGame(game1.getScene());
                     break;
                 case 2:
-                    game2 = new Dalgona(this);
+                    game2 = new Dalgona();
                     game2.getPane().getChildren().add(getHumanPlayer().getSprite());
                     game2.start();
                     setSceneGame(game2.getScene());
@@ -99,15 +100,18 @@ public class Main extends Application {
     public void setScenePlayerboard() { stage.setScene(scenePlayerboard);}
     public void setSceneGame(Scene scene) { stage.setScene(scene); }
     public Player[] getPlayers() { return players; }
-    public int getPlayingPlayers() {
-        int count = 0;
+    public Player[] getPlayingPlayers() {
+        Player[] playingPlayers = new Player[getRemaining()];
+        int i = 0;
         for (Player player: players) {
             if (player.isPlaying()) {
-                count += 1;
+                playingPlayers[i] = player;
+                i += 1;
             }
         }
-        return count;
+        return playingPlayers;
     }
+    public int getRemaining() { return remaining; }
     public Player getHumanPlayer() { return players[humanPlayerNumber]; }
 
     public void eliminatePlayers(int count) {
@@ -213,6 +217,6 @@ public class Main extends Application {
     }
 
     public void updatePrize() {
-        controllerDashboard.labelPrize.setText(String.format("₩%,d", prize));
+        controllerDashboard.labelPrize.setText(String.format("$%,d", prize));
     }
 }
