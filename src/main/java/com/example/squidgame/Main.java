@@ -19,9 +19,8 @@ public class Main extends Application {
     private Stage stage;
     private Scene sceneMain;
 
-    private int gameNumber;
-    private RedLightGreenLight game1;
-    private Dalgona game2;
+    private Game[] games;
+    private int gameIndex;
 
     private GridPane dashboard;
     private DashboardController controllerDashboard;
@@ -54,22 +53,10 @@ public class Main extends Application {
         scenePlayerboard = new Scene(playerboard, 600, 400);
         controllerPlayerboard = fxmlLoaderPlayerboard.getController();
         controllerPlayerboard.buttonNext.setOnAction(event -> {
-            switch (gameNumber) {
-                case 1:
-                    game1 = new RedLightGreenLight();
-                    for (Player player: players) {
-                        game1.getPane().getChildren().add(player.getSprite());
-                    }
-                    game1.start();
-                    setSceneGame(game1.getScene());
-                    break;
-                case 2:
-                    game2 = new Dalgona();
-                    game2.getPane().getChildren().add(getHumanPlayer().getSprite());
-                    game2.start();
-                    setSceneGame(game2.getScene());
-                    break;
-            }
+            Game game = games[gameIndex];
+            setSceneGame(game.getScene());
+            game.getRoot().getChildren().add(0, dashboard);
+            game.start();
         });
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
@@ -100,25 +87,36 @@ public class Main extends Application {
     public void setScenePlayerboard() { stage.setScene(scenePlayerboard);}
     public void setSceneGame(Scene scene) { stage.setScene(scene); }
     public Player[] getPlayers() { return players; }
-    public Player[] getPlayingPlayers() {
-        Player[] playingPlayers = new Player[getRemaining()];
-        int i = 0;
+    public Player getHumanPlayer() { return players[humanPlayerNumber]; }
+    public int getRemaining() { return remaining; }
+    public int getPlaying() {
+        int playing = 0;
         for (Player player: players) {
             if (player.isPlaying()) {
-                playingPlayers[i] = player;
-                i += 1;
+                playing += 1;
+            }
+        }
+        return playing;
+    }
+    public Player[] getPlayingPlayers() {
+        Player[] playingPlayers = new Player[getRemaining()];
+        if (playingPlayers.length > 0) {
+            int i = 0;
+            for (Player player: players) {
+                if (player.isPlaying()) {
+                    playingPlayers[i] = player;
+                    i += 1;
+                }
             }
         }
         return playingPlayers;
     }
-    public int getRemaining() { return remaining; }
-    public Player getHumanPlayer() { return players[humanPlayerNumber]; }
 
     public void eliminatePlayers(int count) {
         remaining -= count;
         prize += PRIZE_INCREMENT * (long)count;
-        updateRemaining();
-        updatePrize();
+        updateLabelRemaining();
+        updateLabelPrize();
     }
 
     private void createPlayers() {
@@ -183,40 +181,56 @@ public class Main extends Application {
 
     public void addGuard(Guard guard) {
         guards.add(guard);
-        game1.getPane().getChildren().add(guard.getSprite());
+        games[gameIndex].getPane().getChildren().add(guard.getSprite());
+    }
+
+    public void updateButtonNextGame() {
+        controllerPlayerboard.buttonNext.setText(games[gameIndex].NAME);
+    }
+
+    public void incrementGame() {
+        if (gameIndex < games.length - 1) {
+            gameIndex += 1;
+        }
+        updateButtonNextGame();
     }
 
     private void resetGame() {
-        gameNumber = 2;
+        games = new Game[] {
+                new RedLightGreenLight(),
+                new Dalgona(),
+        };
+        gameIndex = 1;
         remaining = MAX_PLAYERS;
         prize = 0;
-        updateRemaining();
-        updatePrize();
+        updateLabelRemaining();
+        updateLabelPrize();
+        updateButtonNextGame();
         for (Player player: players) {
             if (player != null) {
-                game1.getPane().getChildren().remove(player.getSprite());
+                games[gameIndex].getPane().getChildren().remove(player.getSprite());
             }
         }
         for (Guard guard: guards) {
             if (guard != null) {
-                game1.getPane().getChildren().remove(guard.getSprite());
+                games[gameIndex].getPane().getChildren().remove(guard.getSprite());
             }
         }
         guards.clear();
     }
 
     // Display the remaining time (seconds).
-    public void updateTimer(double remaining) {
+    public void updateLabelTimer(double remaining) {
         if (remaining >= 0) {
             controllerDashboard.labelTimer.setText(String.format("%02d:%02d", (int) Math.floor(remaining / 60), (int) Math.floor(remaining % 60)));
         }
     }
 
-    public void updateRemaining() {
+    public void updateLabelRemaining() {
         controllerDashboard.labelRemaining.setText(String.format("%,d", remaining));
     }
 
-    public void updatePrize() {
+    public void updateLabelPrize() {
         controllerDashboard.labelPrize.setText(String.format("$%,d", prize));
     }
 }

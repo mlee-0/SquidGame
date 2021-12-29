@@ -32,8 +32,10 @@ public abstract class Entity {
 
     public boolean isAlive() { return alive; }
     public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
-    public double getXLocation() { return x; }
-    public double getYLocation() { return y; }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public void setX(double x) { this.x = x; }
+    public void setY(double y) { this.y = x; }
 
     public abstract Node getSprite();
 

@@ -70,6 +70,6 @@
             </columnConstraints>
         </GridPane>
 
-        <Button fx:id="buttonNext" text="Next Game" style="-fx-font-size: 30; -font-weight: bold"/>
+        <Button fx:id="buttonNext" style="-fx-font-size: 20; -font-weight: bold"/>
     </VBox>
 </HBox>

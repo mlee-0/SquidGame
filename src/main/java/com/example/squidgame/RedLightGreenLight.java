@@ -3,12 +3,9 @@ package com.example.squidgame;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
-
-import java.io.IOException;
 
 public class RedLightGreenLight extends Game {
     public enum State { RED, GREEN, TURNING }
@@ -76,9 +73,7 @@ public class RedLightGreenLight extends Game {
     }
 
     public Scene getScene() { return scene; }
-    public VBox getRoot() { return root; }
     public Pane getPane() { return controller.pane; }
-    public Game1Controller getController() { return controller; }
 
     @Override
     public void handle(long now) {
@@ -142,8 +137,8 @@ public class RedLightGreenLight extends Game {
 
                 // Update the player's position.
                 player.move();
-                double x = player.getXLocation();
-                double y = player.getYLocation();
+                double x = player.getX();
+                double y = player.getY();
 
                 // Stop playing if reached the end.
                 if (x >= Entity.X_MAX) {
@@ -158,14 +153,14 @@ public class RedLightGreenLight extends Game {
         if (numberPlayersEliminated > 0) {
             app.eliminatePlayers(numberPlayersEliminated);
         }
-        if (app.getPlayingPlayers().length <= 0) {
-            stop();
-        }
     }
 
     @Override
     public void start() {
         super.start();
+        for (Player player: app.getPlayers()) {
+            controller.pane.getChildren().add(player.getSprite());
+        }
         app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 75, Guard.Rank.CIRCLE));
         app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 75, Guard.Rank.CIRCLE));
         // Make doll and human player appear in front.

@@ -3,6 +3,7 @@ package com.example.squidgame;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -18,19 +19,21 @@ abstract public class Game extends AnimationTimer {
     protected long now;
     protected long previous;
 
-    abstract protected Scene getScene();
     protected VBox root;
     protected Scene scene;
 
+    abstract protected Scene getScene();
+    public VBox getRoot() { return root; }
+    abstract protected Pane getPane();
+
     public static void setApp(Main app) { Game.app = app; }
-    public void setRoot(FXMLLoader fxmlLoader) {
+    protected void setRoot(FXMLLoader fxmlLoader) {
         try {
             root = fxmlLoader.load();
         }
         catch (IOException e) {
             root = new VBox();
         }
-        root.getChildren().add(0, app.getDashboard());
     }
 
     public void handle(long now) {
@@ -41,6 +44,25 @@ abstract public class Game extends AnimationTimer {
         }
         elapsed += (now - previous);
         previous = now;
-        app.updateTimer((TIME_LIMIT - elapsed) / 1e9);
+        app.updateLabelTimer((TIME_LIMIT - elapsed) / 1e9);
+
+        // Stop the game if no more players playing.
+        if (app.getPlaying() <= 0) {
+            stop();
+        }
     }
+
+    @Override
+    public void start() {
+        super.start();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        app.incrementGame();
+    }
+
+    @Override
+    public String toString() { return NAME; }
 }

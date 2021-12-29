@@ -8,11 +8,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-
-import java.io.IOException;
 
 public class Dalgona extends Game {
     private String[] files = new String[] {
@@ -26,12 +23,9 @@ public class Dalgona extends Game {
 
     private final Game2Controller controller;
 
-    private Player player;
-
     Dalgona() {
         NAME = "Dalgona";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
-        player = app.getHumanPlayer();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game2.fxml"));
         setRoot(fxmlLoader);
@@ -54,28 +48,30 @@ public class Dalgona extends Game {
 
         scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
         scene.setOnKeyPressed(event -> {
+            Player human = app.getHumanPlayer();
             switch (event.getCode()) {
                 case LEFT:
-                    app.getHumanPlayer().setMoveX(-1);
+                    human.setMoveX(-1);
                     break;
                 case RIGHT:
-                    app.getHumanPlayer().setMoveX(+1);
+                    human.setMoveX(+1);
                     break;
                 case UP:
-                    app.getHumanPlayer().setMoveY(-1);
+                    human.setMoveY(-1);
                     break;
                 case DOWN:
-                    app.getHumanPlayer().setMoveY(+1);
+                    human.setMoveY(+1);
                     break;
                 case SPACE:
-                    app.getHumanPlayer().setCutting(true);
+                    human.setCutting(true);
                     break;
                 case L:
-                    app.getHumanPlayer().setLicking(true);
+                    human.setLicking(true);
                     break;
             }
         });
         scene.setOnKeyReleased(event -> {
+            Player human = app.getHumanPlayer();
             switch (event.getCode()) {
                 case ESCAPE:
                     stop();
@@ -83,24 +79,23 @@ public class Dalgona extends Game {
                     break;
                 case LEFT:
                 case RIGHT:
-                    app.getHumanPlayer().setMoveX(0);
+                    human.setMoveX(0);
                     break;
                 case UP:
                 case DOWN:
-                    app.getHumanPlayer().setMoveY(0);
+                    human.setMoveY(0);
                     break;
                 case SPACE:
-                    app.getHumanPlayer().setCutting(false);
+                    human.setCutting(false);
                     break;
                 case L:
-                    app.getHumanPlayer().setLicking(false);
+                    human.setLicking(false);
                     break;
             }
         });
     }
 
     public Scene getScene() { return scene; }
-    public VBox getRoot() { return root; }
     public Pane getPane() { return controller.pane; }
 
     public void checkPassed() {
@@ -111,8 +106,8 @@ public class Dalgona extends Game {
         // Get the original image.
         PixelReader pixelReaderOriginal = image.getPixelReader();
 
-        int numberMatches = 0;
-        int numberChecked = 0;
+        double numberMatches = 0;
+        double numberChecked = 0;
         for (int row = 0; row < IMAGE_SIZE; row++) {
             for (int column = 0; column < IMAGE_SIZE; column++) {
                 Color colorCanvas = pixelReaderCanvas.getColor(row, column);
@@ -127,15 +122,16 @@ public class Dalgona extends Game {
                 }
             }
         }
-        double matchPercent = (double)numberMatches / (double)numberChecked;
+        double matchPercent = numberMatches / numberChecked;
         System.out.printf("%.1f%% matching\n", matchPercent * 100);
 
         boolean passed = matchPercent >= 0.6;
+        Player human = app.getHumanPlayer();
         if (passed) {
-            stop();
+            human.stop();
         }
         else {
-            player.kill();
+            human.kill();
             app.eliminatePlayers(1);
         }
     }
@@ -144,11 +140,12 @@ public class Dalgona extends Game {
     public void handle(long now) {
         super.handle(now);
 
-        player.move();
-        if (player.isCutting()) {
+        Player human = app.getHumanPlayer();
+        human.move();
+        if (human.isCutting()) {
             gc.fillOval(
-                    player.getXLocation() - DRAW_SIZE/2,
-                    player.getYLocation() - DRAW_SIZE/2,
+                    human.getX() - DRAW_SIZE/2,
+                    human.getY() - DRAW_SIZE/2,
                     DRAW_SIZE,
                     DRAW_SIZE
             );
@@ -169,6 +166,7 @@ public class Dalgona extends Game {
     @Override
     public void start() {
         super.start();
+        controller.pane.getChildren().add(app.getHumanPlayer().getSprite());
         image = new Image(
                 getClass().getResource(files[random.nextInt(files.length)]).toExternalForm(),
                 IMAGE_SIZE, IMAGE_SIZE, true, true
