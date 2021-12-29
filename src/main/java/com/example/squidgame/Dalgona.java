@@ -5,9 +5,11 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.io.IOException;
@@ -17,7 +19,7 @@ public class Dalgona extends Game {
             "dalgona_circle.png", "dalgona_triangle.png", "dalgona_star.png", "dalgona_umbrella.png"
     };
     private Image image;
-    private static final int IMAGE_SIZE = (int) (Entity.Y_MAX + Entity.Y_MIN);
+    private static final int IMAGE_SIZE = 500;
     private static final int DRAW_SIZE = 5;
     private final Canvas canvas;
     private final GraphicsContext gc;
@@ -40,6 +42,9 @@ public class Dalgona extends Game {
         canvas.setHeight(IMAGE_SIZE);
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Paint.valueOf(Colors.BLACK));
+        controller.circle.setRadius(IMAGE_SIZE / 2.0);
+        controller.circle.setCenterX(IMAGE_SIZE / 2.0);
+        controller.circle.setCenterY(IMAGE_SIZE / 2.0);
         controller.pane.setMaxWidth(IMAGE_SIZE);
         controller.pane.setMaxHeight(IMAGE_SIZE);
         controller.buttonFinish.setFocusTraversable(false);
@@ -99,10 +104,33 @@ public class Dalgona extends Game {
     public Pane getPane() { return controller.pane; }
 
     public void checkPassed() {
+        // Get the canvas image.
         WritableImage writableImage = new WritableImage(IMAGE_SIZE, IMAGE_SIZE);
         canvas.snapshot(null, writableImage);
+        PixelReader pixelReaderCanvas = writableImage.getPixelReader();
+        // Get the original image.
+        PixelReader pixelReaderOriginal = image.getPixelReader();
 
-        boolean passed = false;
+        int numberMatches = 0;
+        int numberChecked = 0;
+        for (int row = 0; row < IMAGE_SIZE; row++) {
+            for (int column = 0; column < IMAGE_SIZE; column++) {
+                Color colorCanvas = pixelReaderCanvas.getColor(row, column);
+                Color colorOriginal = pixelReaderOriginal.getColor(row, column);
+                boolean isOutline = colorOriginal.getOpacity() > 0;
+                boolean isDrawn = colorCanvas.getBrightness() < 1;
+                if (isOutline || isDrawn) {
+                    numberChecked += 1;
+                    if (isOutline && isDrawn) {
+                        numberMatches += 1;
+                    }
+                }
+            }
+        }
+        double matchPercent = (double)numberMatches / (double)numberChecked;
+        System.out.printf("%.1f%% matching\n", matchPercent * 100);
+
+        boolean passed = matchPercent >= 0.6;
         if (passed) {
             stop();
         }
@@ -130,8 +158,10 @@ public class Dalgona extends Game {
             if (random.nextFloat() < 0.005) {
                 Player[] playingPlayers = app.getPlayingPlayers();
                 int index = random.nextInt(playingPlayers.length);
-                playingPlayers[index].kill();
-                app.eliminatePlayers(1);
+                if (playingPlayers[index].isComputer()) {
+                    playingPlayers[index].kill();
+                    app.eliminatePlayers(1);
+                }
             }
         }
     }
@@ -143,7 +173,7 @@ public class Dalgona extends Game {
                 getClass().getResource(files[random.nextInt(files.length)]).toExternalForm(),
                 IMAGE_SIZE, IMAGE_SIZE, true, true
         );
-        gc.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight());
+        controller.imageView.setImage(image);
     }
 
     @Override
