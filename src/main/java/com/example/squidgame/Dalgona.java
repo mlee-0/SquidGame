@@ -151,14 +151,27 @@ public class Dalgona extends Game {
             );
         }
 
-        if ((TIME_LIMIT - elapsed) < 600e9) {
-            if (random.nextFloat() < 0.005) {
-                Player[] playingPlayers = app.getPlayingPlayers();
-                int index = random.nextInt(playingPlayers.length);
-                if (playingPlayers[index].isComputer()) {
-                    playingPlayers[index].kill();
-                    app.eliminatePlayers(1);
-                }
+        if (random.nextFloat() < 0.01 * elapsed/TIME_LIMIT) {
+            Player[] playingPlayers = app.getPlayingPlayers();
+            int index = random.nextInt(playingPlayers.length);
+            if (playingPlayers[index].isComputer()) {
+                playingPlayers[index].kill();
+                app.eliminatePlayers(1);
+            }
+        }
+    }
+
+    @Override
+    protected void handlePlayer(Player player) {
+        super.handlePlayer(player);
+
+        if (elapsed >= TIME_LIMIT) {
+            if (player.isComputer()) {
+                player.stop();
+            }
+            else {
+                player.kill();
+                app.eliminatePlayers(1);
             }
         }
     }

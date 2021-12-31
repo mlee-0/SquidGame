@@ -5,7 +5,7 @@ import javafx.scene.Node;
 public abstract class Entity {
     protected double x;
     protected double y;
-//    protected double z = 0;
+    protected double z = 0;
 
     protected static final double X_MIN = 10;
     protected static final double X_MAX = 1190;
@@ -14,12 +14,12 @@ public abstract class Entity {
 
     protected double xSpeed = 0.0;
     protected double ySpeed = 0.0;
-//    protected double zSpeed = 0.0;
+    protected double zSpeed = 0.0;
     protected double maxSpeed;
 
     protected int xDirection = 0;
     protected int yDirection = 0;
-//    protected int zDirection = 0;
+    protected int zDirection = 0;
 
 //    protected long timeStartMoveX;
 //    protected long timeStartMoveY;

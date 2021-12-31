@@ -13,13 +13,14 @@ public class Player extends Entity {
     private final int playerNumber;
     private final boolean computer;
 
-    private boolean playing = true;
-    private boolean cutting = false;
-    private boolean licking = false;
-
     private String name = "";
     private int age;
     private String occupation = "";
+    private double strength;
+
+    private boolean playing;
+    private boolean cutting;
+    private boolean licking;
 
     private long timeKill = Long.MAX_VALUE;
     private long timeStartMove = Long.MAX_VALUE;
@@ -32,7 +33,7 @@ public class Player extends Entity {
     private FillTransition humanAnimation;
     private Button playerboardButton;
 
-    Player(int playerNumber, double x, double y, double maxSpeed, boolean computer, int age, String occupation) {
+    Player(int playerNumber, double x, double y, double maxSpeed, boolean computer, int age, String occupation, double strength) {
         this.playerNumber = playerNumber;
         this.x = x;
         this.y = y;
@@ -40,11 +41,9 @@ public class Player extends Entity {
         this.computer = computer;
         this.age = age;
         this.occupation = occupation;
+        this.strength = strength;
+
         sprite = new Circle(x, y, 5);
-        sprite.setFill(Paint.valueOf(Colors.PLAYER));
-        sprite.setStroke(Paint.valueOf(computer ? Colors.PLAYER_DARK : Colors.BLACK));
-        sprite.setStrokeWidth(computer ? 1 : 2);
-        sprite.setOpacity(0.9);
         // Create an animation if a human player.
         if (!computer) {
             humanAnimation = new FillTransition(
@@ -52,8 +51,9 @@ public class Player extends Entity {
                     );
             humanAnimation.setCycleCount(Animation.INDEFINITE);
             humanAnimation.setAutoReverse(true);
-            humanAnimation.play();
         }
+
+        reset();
     }
 
     public Circle getSprite() { return sprite; }
@@ -113,6 +113,31 @@ public class Player extends Entity {
         if (!scheduledStopMove) {
             timeStopMove = time;
             scheduledStopMove = true;
+        }
+    }
+
+    public void reset() {
+        playing = true;
+        cutting = false;
+        licking = false;
+
+        timeKill = Long.MAX_VALUE;
+        timeStartMove = Long.MAX_VALUE;
+        timeStopMove = Long.MAX_VALUE;
+        scheduledKill = false;
+        scheduledStartMove = false;
+        scheduledStopMove = false;
+
+        xDirection = 0;
+        yDirection = 0;
+        zDirection = 0;
+
+        sprite.setFill(Paint.valueOf(Colors.PLAYER));
+        sprite.setStroke(Paint.valueOf(computer ? Colors.PLAYER_DARK : Colors.BLACK));
+        sprite.setStrokeWidth(computer ? 1 : 2);
+        sprite.setOpacity(0.9);
+        if (!computer) {
+            humanAnimation.play();
         }
     }
 

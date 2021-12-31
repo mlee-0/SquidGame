@@ -93,65 +93,49 @@ public class RedLightGreenLight extends Game {
             state = State.RED;
             doll.setState(state);
         }
+    }
 
-        // Process each player.
-        int numberPlayersEliminated = 0;
-        for (Player player: app.getPlayers()) {
-            if (player.isAlive() && player.isPlaying()) {
-                // Perform any scheduled actions if enough time has elapsed.
-                if (player.isScheduledStartMove() && now >= player.getTimeStartMove()) {
-                    player.setMoveX(1);
-                }
-                if (player.isScheduledKill() && now >= player.getTimeKill()) {
-                    player.kill();
-                    app.getControllerPlayerboard().board.getChildren().remove(player.getPlayerboardButton());
-                    numberPlayersEliminated += 1;
-                }
-                // Schedule killing for remaining players after game ends.
-                if (elapsed >= TIME_LIMIT) {
-                    player.scheduleKill(now + random.nextLong((long)5e9));
-                }
+    @Override
+    protected void handlePlayer(Player player) {
+        super.handlePlayer(player);
 
-                switch (state) {
-                    case RED:
-                        if (player.isMoving()) {
-                            if (!player.isScheduledKill()) {
-                                player.scheduleKill(now + random.nextLong((long)((next - now)/2.0)));
-                            }
-                            if (random.nextFloat() < PROBABILITY_STOP/5) {
-                                player.stopMove();
-                            }
-                        }
-                        break;
-                    case GREEN:
-                        if (player.isComputer() && !player.isScheduledStartMove()) {
-                            player.scheduleStartMove(now + random.nextLong((long)1e9));
-                        }
-                        break;
-                    case TURNING:
-                        if (player.isComputer() && random.nextFloat() < PROBABILITY_STOP) {
-                            player.stopMove();
-                        }
-                        break;
-                }
-
-                // Update the player's position.
-                player.move();
-                double x = player.getX();
-                double y = player.getY();
-
-                // Stop playing if reached the end.
-                if (x >= Entity.X_MAX) {
-                    player.stop();
-                }
-                // Reverse the direction if at the bounds.
-                if (y < Entity.Y_MIN || y > Entity.Y_MAX && player.isComputer()) {
-                    player.changeYDirection(-1);
-                }
-            }
+        // Schedule killing for remaining players after game ends.
+        if (elapsed >= TIME_LIMIT) {
+            player.scheduleKill(now + random.nextLong((long)5e9));
         }
-        if (numberPlayersEliminated > 0) {
-            app.eliminatePlayers(numberPlayersEliminated);
+
+        switch (state) {
+            case RED:
+                if (player.isMoving()) {
+                    if (!player.isScheduledKill()) {
+                        player.scheduleKill(now + random.nextLong((long)((next - now)/2.0)));
+                    }
+                    if (random.nextFloat() < PROBABILITY_STOP/5) {
+                        player.stopMove();
+                    }
+                }
+                break;
+            case GREEN:
+                if (player.isComputer() && !player.isScheduledStartMove()) {
+                    player.scheduleStartMove(now + random.nextLong((long)1e9));
+                }
+                break;
+            case TURNING:
+                if (player.isComputer() && random.nextFloat() < PROBABILITY_STOP) {
+                    player.stopMove();
+                }
+                break;
+        }
+
+        double x = player.getX();
+        double y = player.getY();
+        // Stop playing if reached the end.
+        if (x >= Entity.X_MAX) {
+            player.stop();
+        }
+        // Reverse the direction if at the bounds.
+        if (y < Entity.Y_MIN || y > Entity.Y_MAX && player.isComputer()) {
+            player.changeYDirection(-1);
         }
     }
 

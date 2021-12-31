@@ -112,13 +112,6 @@ public class Main extends Application {
         return playingPlayers;
     }
 
-    public void eliminatePlayers(int count) {
-        remaining -= count;
-        prize += PRIZE_INCREMENT * (long)count;
-        updateLabelRemaining();
-        updateLabelPrize();
-    }
-
     private void createPlayers() {
         ArrayList<String> occupations = new ArrayList<>();
         InputStream input = getClass().getResourceAsStream("occupations.txt");
@@ -148,7 +141,10 @@ public class Main extends Application {
             double y = random.nextDouble(Entity.Y_MIN, Entity.Y_MIN + (Entity.Y_MAX - Entity.Y_MIN));
             int age = random.nextInt(18, 101);
             String occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
-            Player player = new Player(i+1, x, y, speed, i != humanPlayerNumber, age, occupation);
+            double strength = random.nextDouble(0.5, 1);
+            Player player = new Player(
+                    i+1, x, y, speed, i != humanPlayerNumber, age, occupation, strength
+            );
             players[i] = player;
 
             // Add players to player board.
@@ -179,6 +175,13 @@ public class Main extends Application {
         }
     }
 
+    public void eliminatePlayers(int count) {
+        remaining -= count;
+        prize += PRIZE_INCREMENT * (long)count;
+        updateLabelRemaining();
+        updateLabelPrize();
+    }
+
     public void addGuard(Guard guard) {
         guards.add(guard);
         games[gameIndex].getPane().getChildren().add(guard.getSprite());
@@ -195,12 +198,20 @@ public class Main extends Application {
         updateButtonNextGame();
     }
 
+    public void resetPlayers() {
+        for (Player player: getPlayers()) {
+            if (player.isAlive()) {
+                player.reset();
+            }
+        }
+    }
+
     private void resetGame() {
         games = new Game[] {
                 new RedLightGreenLight(),
                 new Dalgona(),
         };
-        gameIndex = 1;
+        gameIndex = 0;
         remaining = MAX_PLAYERS;
         prize = 0;
         updateLabelRemaining();
