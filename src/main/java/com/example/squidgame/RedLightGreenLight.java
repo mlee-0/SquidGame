@@ -14,6 +14,7 @@ public class RedLightGreenLight extends Game {
     private static final float PROBABILITY_STOP = 0.6f;
 
     private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
+    private MediaPlayer music = new MediaPlayer(new Media(getClass().getResource("game_1.mp3").toExternalForm()));
     private final MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
 
     private final Game1Controller controller;
@@ -66,6 +67,9 @@ public class RedLightGreenLight extends Game {
                     break;
             }
         });
+
+        music.setCycleCount(MediaPlayer.INDEFINITE);
+        music.setVolume(0.5);
 
         sound.setOnEndOfMedia(() -> {
             sound.stop();
@@ -152,12 +156,14 @@ public class RedLightGreenLight extends Game {
         // Make doll and human player appear in front.
         doll.getSprite().toFront();
         app.getHumanPlayer().getSprite().toFront();
+        music.play();
     }
 
     @Override
     public void stop() {
         super.stop();
         sound.stop();
+        music.stop();
         app.setScenePlayerboard();
     }
 
