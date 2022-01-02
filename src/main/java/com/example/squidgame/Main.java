@@ -43,6 +43,7 @@ public class Main extends Application {
     private final Player[] players = new Player[MAX_PLAYERS];
     private final ArrayList<Guard> guards = new ArrayList<>();
 
+    private double volumeMusic = 0.75;
     private MediaPlayer musicMenu = new MediaPlayer(new Media(
             getClass().getResource("menu.mp3").toExternalForm()
     ));
@@ -87,10 +88,10 @@ public class Main extends Application {
 
         musicMenu.setCycleCount(MediaPlayer.INDEFINITE);
         musicPlayerboard.setCycleCount(MediaPlayer.INDEFINITE);
-        musicMenu.setVolume(0.5);
-        musicPlayerboard.setVolume(0.5);
+        musicMenu.setVolume(volumeMusic);
+        musicPlayerboard.setVolume(volumeMusic);
 
-        stage.setTitle("Squid Game");
+        stage.setTitle("Squid Game Game");
         setSceneMain();
         stage.show();
     }
@@ -249,4 +250,6 @@ public class Main extends Application {
     public void updateLabelPrize() {
         controllerDashboard.labelPrize.setText(String.format("$%,d", prize));
     }
+
+    public double getVolumeMusic() { return volumeMusic; }
 }

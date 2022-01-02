@@ -101,6 +101,10 @@ public class Dalgona extends Game {
     public Pane getPane() { return controller.pane; }
 
     public void checkPassed() {
+        if (!app.getHumanPlayer().isAlive() && !app.getHumanPlayer().isPlaying()) {
+            return;
+        }
+
         // Get the canvas image.
         WritableImage writableImage = new WritableImage(IMAGE_SIZE, IMAGE_SIZE);
         canvas.snapshot(null, writableImage);

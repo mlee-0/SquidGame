@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -45,6 +46,12 @@ public class Player extends Entity {
     private static String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
     private static String VOWELS = "aeiou";
     private static ArrayList<String> occupations;
+
+    private static AudioClip[] soundsKill = new AudioClip[] {
+            new AudioClip(Player.class.getResource("kill_1.mp3").toExternalForm()),
+            new AudioClip(Player.class.getResource("kill_2.mp3").toExternalForm()),
+            new AudioClip(Player.class.getResource("kill_3.mp3").toExternalForm()),
+    };
 
     Player(int playerNumber, boolean computer) {
         this.playerNumber = playerNumber;
@@ -210,6 +217,8 @@ public class Player extends Entity {
             sprite.setStrokeWidth(0);
         });
         killAnimation.play();
+
+        soundsKill[random.nextInt(soundsKill.length)].play(computer ? 0.1 : 0.5);
 
         Main app = Main.getApp();
         app.eliminatePlayers(1);

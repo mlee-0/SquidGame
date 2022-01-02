@@ -75,7 +75,7 @@ public class RedLightGreenLight extends Game {
         });
 
         music.setCycleCount(MediaPlayer.INDEFINITE);
-        music.setVolume(0.5);
+        music.setVolume(Main.getApp().getVolumeMusic());
 
         for (MediaPlayer sound: sounds) {
             sound.setOnEndOfMedia(() -> {
