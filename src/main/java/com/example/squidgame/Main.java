@@ -9,6 +9,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -41,6 +43,13 @@ public class Main extends Application {
     private final Player[] players = new Player[MAX_PLAYERS];
     private final ArrayList<Guard> guards = new ArrayList<>();
 
+    private MediaPlayer musicMenu = new MediaPlayer(new Media(
+            getClass().getResource("menu.mp3").toExternalForm()
+    ));
+    private MediaPlayer musicPlayerboard = new MediaPlayer(new Media(
+            getClass().getResource("pregame.mp3").toExternalForm()
+    ));
+
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
@@ -56,6 +65,7 @@ public class Main extends Application {
         controllerPlayerboard = fxmlLoaderPlayerboard.getController();
         controllerPlayerboard.buttonNext.setOnAction(event -> {
             Game game = games[gameIndex];
+            musicPlayerboard.stop();
             setSceneGame(game.getScene());
             game.getRoot().getChildren().add(0, dashboard);
             game.start();
@@ -66,7 +76,8 @@ public class Main extends Application {
         sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
         MainController controllerMain = fxmlLoader.getController();
         controllerMain.buttonPlay.setOnAction(event -> {
-            stage.setScene(scenePlayerboard);
+            musicMenu.stop();
+            setScenePlayerboard();
             resetGame();
             createPlayers();
         });
@@ -74,8 +85,13 @@ public class Main extends Application {
         // Load occupations file.
         Player.loadOccupations();
 
+        musicMenu.setCycleCount(MediaPlayer.INDEFINITE);
+        musicPlayerboard.setCycleCount(MediaPlayer.INDEFINITE);
+        musicMenu.setVolume(0.5);
+        musicPlayerboard.setVolume(0.5);
+
         stage.setTitle("Squid Game");
-        stage.setScene(sceneMain);
+        setSceneMain();
         stage.show();
     }
 
@@ -88,8 +104,15 @@ public class Main extends Application {
     public DashboardController getControllerDashboard() { return controllerDashboard; }
     public PlayerboardController getControllerPlayerboard() { return controllerPlayerboard; }
 
-    public void setSceneMain() { stage.setScene(sceneMain); }
-    public void setScenePlayerboard() { stage.setScene(scenePlayerboard);}
+    public void setSceneMain() {
+        stage.setScene(sceneMain);
+        musicMenu.play();
+    }
+
+    public void setScenePlayerboard() {
+        stage.setScene(scenePlayerboard);
+        musicPlayerboard.play();
+    }
     public void setSceneGame(Scene scene) { stage.setScene(scene); }
     public Player[] getPlayers() { return players; }
     public Player getHumanPlayer() { return players[humanPlayerNumber]; }

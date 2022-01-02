@@ -14,8 +14,14 @@ public class RedLightGreenLight extends Game {
     private static final float PROBABILITY_STOP = 0.6f;
 
     private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
-    private MediaPlayer music = new MediaPlayer(new Media(getClass().getResource("game_1.mp3").toExternalForm()));
-    private final MediaPlayer sound = new MediaPlayer(new Media(getClass().getResource("game1.wav").toExternalForm()));
+    private final MediaPlayer music = new MediaPlayer(new Media(getClass().getResource("game_1.mp3").toExternalForm()));
+    private final MediaPlayer[] sounds = new MediaPlayer[] {
+            new MediaPlayer(new Media(getClass().getResource("game1_40.wav").toExternalForm())),
+            new MediaPlayer(new Media(getClass().getResource("game1_50.wav").toExternalForm())),
+            new MediaPlayer(new Media(getClass().getResource("game1_60.wav").toExternalForm())),
+            new MediaPlayer(new Media(getClass().getResource("game1_70.wav").toExternalForm())),
+            new MediaPlayer(new Media(getClass().getResource("game1_80.wav").toExternalForm())),
+    };
 
     private final Game1Controller controller;
 
@@ -71,11 +77,13 @@ public class RedLightGreenLight extends Game {
         music.setCycleCount(MediaPlayer.INDEFINITE);
         music.setVolume(0.5);
 
-        sound.setOnEndOfMedia(() -> {
-            sound.stop();
-            sound.seek(sound.getStartTime());
-            cycleState();
-        });
+        for (MediaPlayer sound: sounds) {
+            sound.setOnEndOfMedia(() -> {
+                sound.stop();
+//                sound.seek(sound.getStartTime());
+                cycleState();
+            });
+        }
     }
 
     public Scene getScene() { return scene; }
@@ -162,7 +170,9 @@ public class RedLightGreenLight extends Game {
     @Override
     public void stop() {
         super.stop();
-        sound.stop();
+        for (MediaPlayer sound: sounds) {
+            sound.stop();
+        }
         music.stop();
         app.setScenePlayerboard();
     }
@@ -173,8 +183,7 @@ public class RedLightGreenLight extends Game {
                 state = State.GREEN;
                 next = Long.MAX_VALUE;
                 // Play sound.
-                sound.setRate(random.nextDouble(1, 3));
-                sound.play();
+                sounds[random.nextInt(sounds.length)].play();
                 break;
             case GREEN:
                 state = State.TURNING;
