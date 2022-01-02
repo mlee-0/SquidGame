@@ -9,14 +9,16 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
+import java.util.Random;
+
 public class Player extends Entity {
     private final int playerNumber;
     private final boolean computer;
 
-    private String name = "";
-    private int age;
-    private String occupation = "";
-    private double strength;
+    private final String name;
+    private final int age;
+    private final String occupation;
+    private final double strength;
 
     private boolean playing;
     private boolean cutting;
@@ -29,19 +31,19 @@ public class Player extends Entity {
     private boolean scheduledStartMove = false;
     private boolean scheduledStopMove = false;
 
-    private Circle sprite;
+    private final Circle sprite;
     private FillTransition humanAnimation;
     private Button playerboardButton;
 
-    Player(int playerNumber, double x, double y, double maxSpeed, boolean computer, int age, String occupation, double strength) {
+    Player(int playerNumber, boolean computer, String name, int age, String occupation, double strength) {
         this.playerNumber = playerNumber;
-        this.x = x;
-        this.y = y;
-        this.maxSpeed = maxSpeed;
         this.computer = computer;
+        this.name = name;
         this.age = age;
         this.occupation = occupation;
         this.strength = strength;
+
+        relativeSpeed = new Random().nextDouble(0, 1);
 
         sprite = new Circle(x, y, 5);
         // Create an animation if a human player.
@@ -56,25 +58,29 @@ public class Player extends Entity {
         reset();
     }
 
-    public Circle getSprite() { return sprite; }
-    public Button getPlayerboardButton() { return playerboardButton; }
+    public String getPlayerNumber() { return String.format("%03d", playerNumber); }
     public boolean isComputer() { return computer; }
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getOccupation() { return occupation; }
+    public double getStrength() { return strength; }
+
     public boolean isPlaying() { return playing; }
     public boolean isCutting() { return cutting; }
     public boolean isLicking() { return licking; }
     public void setCutting(boolean cutting) { this.cutting = cutting; }
-    public void setLicking(boolean licking) { this.licking = licking; }
-    public String getPlayerNumber() { return String.format("%03d", playerNumber); }
-    public String getName() { return name; }
-    public int getAge() { return age; }
-    public String getOccupation() { return occupation; }
 
+    public void setLicking(boolean licking) { this.licking = licking; }
     public long getTimeKill() { return timeKill; }
     public long getTimeStartMove() { return timeStartMove; }
     public long getTimeStopMove() { return timeStopMove; }
     public boolean isScheduledKill() { return scheduledKill; }
     public boolean isScheduledStartMove() { return scheduledStartMove; }
+
     public boolean isScheduledStopMove() { return scheduledStopMove; }
+    public Circle getSprite() { return sprite; }
+    public Button getPlayerboardButton() { return playerboardButton; }
     public void setPlayerboardButton(Button button) { playerboardButton = button; }
 
     public void setMoveX(int direction) {
@@ -128,6 +134,19 @@ public class Player extends Entity {
         scheduledStartMove = false;
         scheduledStopMove = false;
 
+        double[] startingPosition = Main.getGame().startingPosition;
+        if (startingPosition[0] >= 0) {
+            x = startingPosition[0];
+        }
+        else {
+            x = new Random().nextDouble(Entity.X_MIN, Entity.X_MAX);
+        }
+        if (startingPosition[1] >= 0) {
+            y = startingPosition[1];
+        }
+        else {
+            y = new Random().nextDouble(Entity.Y_MIN, Entity.Y_MAX);
+        }
         xDirection = 0;
         yDirection = 0;
         zDirection = 0;
@@ -179,6 +198,10 @@ public class Player extends Entity {
             sprite.setStrokeWidth(0);
         });
         killAnimation.play();
+
+        Main app = Main.getApp();
+        app.eliminatePlayers(1);
+        app.getControllerPlayerboard().board.getChildren().remove(playerboardButton);
 
         System.out.printf("Killed %d\n", playerNumber);
     }

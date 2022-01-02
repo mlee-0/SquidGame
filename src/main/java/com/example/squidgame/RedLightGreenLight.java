@@ -21,6 +21,8 @@ public class RedLightGreenLight extends Game {
     RedLightGreenLight() {
         NAME = "Red Light, Green Light";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
+        startingPosition = new double[] {Entity.X_MIN, -1};
+        playerSpeedRange = new double[] {0.6, 1.0};
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game1.fxml"));
         setRoot(fxmlLoader);

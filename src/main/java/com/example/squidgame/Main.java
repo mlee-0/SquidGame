@@ -16,11 +16,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application {
+    private static Main app;
+
     private Stage stage;
     private Scene sceneMain;
 
-    private Game[] games;
-    private int gameIndex;
+    private static Game[] games;
+    private static int gameIndex;
 
     private GridPane dashboard;
     private DashboardController controllerDashboard;
@@ -42,7 +44,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
-        Game.setApp(this);
+        Main.app = this;
 
         FXMLLoader fxmlLoaderDashboard = new FXMLLoader(getClass().getResource("dashboard.fxml"));
         dashboard = fxmlLoaderDashboard.load();
@@ -63,7 +65,6 @@ public class Main extends Application {
         VBox rootMain = fxmlLoader.load();
         sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
         MainController controllerMain = fxmlLoader.getController();
-        controllerMain.buttonPlay.setText("Play");
         controllerMain.buttonPlay.setOnAction(event -> {
             stage.setScene(scenePlayerboard);
             resetGame();
@@ -79,6 +80,7 @@ public class Main extends Application {
         launch();
     }
 
+    public static Main getApp() { return app; }
     public GridPane getDashboard() { return dashboard; }
     public DashboardController getControllerDashboard() { return controllerDashboard; }
     public PlayerboardController getControllerPlayerboard() { return controllerPlayerboard; }
@@ -136,14 +138,12 @@ public class Main extends Application {
         children.remove(0, children.size());
         humanPlayerNumber = random.nextInt(MAX_PLAYERS);
         for (int i = 0; i < players.length; i++) {
-            double speed = random.nextDouble(0.5, 1.0);
-            double x = Entity.X_MIN;
-            double y = random.nextDouble(Entity.Y_MIN, Entity.Y_MIN + (Entity.Y_MAX - Entity.Y_MIN));
+            int playerNumber = i + 1;
             int age = random.nextInt(18, 101);
             String occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
             double strength = random.nextDouble(0.5, 1);
             Player player = new Player(
-                    i+1, x, y, speed, i != humanPlayerNumber, age, occupation, strength
+                    playerNumber, i != humanPlayerNumber, "", age, occupation, strength
             );
             players[i] = player;
 
@@ -190,6 +190,8 @@ public class Main extends Application {
     public void updateButtonNextGame() {
         controllerPlayerboard.buttonNext.setText(games[gameIndex].NAME);
     }
+
+    public static Game getGame() { return games[gameIndex]; }
 
     public void incrementGame() {
         if (gameIndex < games.length - 1) {

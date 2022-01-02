@@ -10,5 +10,5 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <Button fx:id="buttonPlay" style="-fx-font-size: 30; -fx-font-weight: bold"/>
+    <Button fx:id="buttonPlay" text="Play" style="-fx-font-size: 30; -fx-font-weight: bold"/>
 </VBox>

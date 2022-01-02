@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class Dalgona extends Game {
-    private String[] files = new String[] {
+    private final String[] files = new String[] {
             "dalgona_circle.png", "dalgona_triangle.png", "dalgona_star.png", "dalgona_umbrella.png"
     };
     private Image image;
@@ -26,6 +26,8 @@ public class Dalgona extends Game {
     Dalgona() {
         NAME = "Dalgona";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
+        startingPosition = new double[] {IMAGE_SIZE/2.0, IMAGE_SIZE/2.0};
+        playerSpeedRange = new double[] {0.25, 0.25};
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game2.fxml"));
         setRoot(fxmlLoader);
@@ -48,7 +50,7 @@ public class Dalgona extends Game {
 
         scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
         scene.setOnKeyPressed(event -> {
-            Player human = app.getHumanPlayer();
+            Player human = Main.getApp().getHumanPlayer();
             switch (event.getCode()) {
                 case LEFT:
                     human.setMoveX(-1);
@@ -132,7 +134,6 @@ public class Dalgona extends Game {
         }
         else {
             human.kill();
-            app.eliminatePlayers(1);
         }
     }
 
@@ -144,8 +145,8 @@ public class Dalgona extends Game {
         human.move();
         if (human.isCutting()) {
             gc.fillOval(
-                    human.getX() - DRAW_SIZE/2,
-                    human.getY() - DRAW_SIZE/2,
+                    human.getX() - DRAW_SIZE/2.0,
+                    human.getY() - DRAW_SIZE/2.0,
                     DRAW_SIZE,
                     DRAW_SIZE
             );
@@ -156,7 +157,6 @@ public class Dalgona extends Game {
             int index = random.nextInt(playingPlayers.length);
             if (playingPlayers[index].isComputer()) {
                 playingPlayers[index].kill();
-                app.eliminatePlayers(1);
             }
         }
     }
@@ -171,7 +171,6 @@ public class Dalgona extends Game {
             }
             else {
                 player.kill();
-                app.eliminatePlayers(1);
             }
         }
     }

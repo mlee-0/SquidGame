@@ -15,7 +15,8 @@ public abstract class Entity {
     protected double xSpeed = 0.0;
     protected double ySpeed = 0.0;
     protected double zSpeed = 0.0;
-    protected double maxSpeed;
+    // A number in [0, 1] used to interpolate the speed for this instance.
+    protected double relativeSpeed = 1;
 
     protected int xDirection = 0;
     protected int yDirection = 0;
@@ -30,14 +31,11 @@ public abstract class Entity {
 
     protected boolean alive = true;
 
-    public boolean isAlive() { return alive; }
-    public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
     public double getX() { return x; }
     public double getY() { return y; }
     public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = x; }
-
-    public abstract Node getSprite();
+    public void setY(double y) { this.y = y; }
+    public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
 
     public void move() {
         // Keep in bounds.
@@ -51,9 +49,14 @@ public abstract class Entity {
             y = Y_MAX;
         }
 
-        xSpeed = xDirection != 0 ? maxSpeed : 0;
-        ySpeed = yDirection != 0 ? maxSpeed : 0;
+        double[] speedRange = Main.getGame().playerSpeedRange;
+        double speed = speedRange[0] + (speedRange[1] - speedRange[0]) * relativeSpeed;
+        xSpeed = xDirection != 0 ? speed : 0;
+        ySpeed = yDirection != 0 ? speed : 0;
         x += xDirection * xSpeed;
         y += yDirection * ySpeed;
     }
+
+    public boolean isAlive() { return alive; }
+    public abstract Node getSprite();
 }

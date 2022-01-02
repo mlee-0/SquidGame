@@ -12,12 +12,17 @@ import java.util.Random;
 abstract public class Game extends AnimationTimer {
     protected String NAME;
     protected static final Random random = new Random();
-    protected static Main app;
+    protected static Main app = Main.getApp();
 
     protected long TIME_LIMIT;
     protected long elapsed;
     protected long now;
     protected long previous;
+
+    // The initial X and Y positions for players. Use a negative number to randomize the position within the possible range of values.
+    protected double[] startingPosition = {Entity.X_MIN, Entity.X_MIN};
+    // The minimum and maximum possible speeds for players.
+    protected double[] playerSpeedRange = {1, 1};
 
     protected VBox root;
     protected Scene scene;
@@ -26,7 +31,6 @@ abstract public class Game extends AnimationTimer {
     public VBox getRoot() { return root; }
     abstract protected Pane getPane();
 
-    public static void setApp(Main app) { Game.app = app; }
     protected void setRoot(FXMLLoader fxmlLoader) {
         try {
             root = fxmlLoader.load();
@@ -67,8 +71,6 @@ abstract public class Game extends AnimationTimer {
         }
         if (player.isScheduledKill() && now >= player.getTimeKill()) {
             player.kill();
-            app.getControllerPlayerboard().board.getChildren().remove(player.getPlayerboardButton());
-            app.eliminatePlayers(1);
         }
 
         // Update the player's position.
