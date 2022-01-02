@@ -71,6 +71,9 @@ public class Main extends Application {
             createPlayers();
         });
 
+        // Load occupations file.
+        Player.loadOccupations();
+
         stage.setTitle("Squid Game");
         stage.setScene(sceneMain);
         stage.show();
@@ -115,36 +118,12 @@ public class Main extends Application {
     }
 
     private void createPlayers() {
-        ArrayList<String> occupations = new ArrayList<>();
-        InputStream input = getClass().getResourceAsStream("occupations.txt");
-        if (input != null) {
-            try {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
-                    String line;
-                    do {
-                        line = reader.readLine();
-                        if (line != null && line.length() > 0) {
-                            occupations.add(line);
-                        }
-                    } while (line != null);
-                }
-            }
-            catch (IOException e) {
-                occupations = null;
-            }
-        }
-
         ObservableList<Node> children = controllerPlayerboard.board.getChildren();
         children.remove(0, children.size());
         humanPlayerNumber = random.nextInt(MAX_PLAYERS);
         for (int i = 0; i < players.length; i++) {
             int playerNumber = i + 1;
-            int age = random.nextInt(18, 101);
-            String occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
-            double strength = random.nextDouble(0.5, 1);
-            Player player = new Player(
-                    playerNumber, i != humanPlayerNumber, "", age, occupation, strength
-            );
+            Player player = new Player(playerNumber, i != humanPlayerNumber);
             players[i] = player;
 
             // Add players to player board.
@@ -165,6 +144,7 @@ public class Main extends Application {
                 controllerPlayerboard.labelName.setText(player.getName());
                 controllerPlayerboard.labelAge.setText(String.valueOf(player.getAge()));
                 controllerPlayerboard.labelOccupation.setText(player.getOccupation());
+                controllerPlayerboard.labelStrength.setText(String.format("%.1f", player.getStrength()));
             });
             controllerPlayerboard.board.add(button, column, row);
             player.setPlayerboardButton(button);

@@ -9,6 +9,11 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Player extends Entity {
@@ -35,13 +40,20 @@ public class Player extends Entity {
     private FillTransition humanAnimation;
     private Button playerboardButton;
 
-    Player(int playerNumber, boolean computer, String name, int age, String occupation, double strength) {
+    private static Random random = new Random();
+
+    private static String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
+    private static String VOWELS = "aeiou";
+    private static ArrayList<String> occupations;
+
+    Player(int playerNumber, boolean computer) {
         this.playerNumber = playerNumber;
         this.computer = computer;
-        this.name = name;
-        this.age = age;
-        this.occupation = occupation;
-        this.strength = strength;
+
+        name = generateName();
+        age = random.nextInt(18, 101);
+        occupation = (occupations != null) ? occupations.get(random.nextInt(occupations.size())) : "";
+        strength = random.nextDouble(0.5, 1);
 
         relativeSpeed = new Random().nextDouble(0, 1);
 
@@ -204,6 +216,53 @@ public class Player extends Entity {
         app.getControllerPlayerboard().board.getChildren().remove(playerboardButton);
 
         System.out.printf("Killed %d\n", playerNumber);
+    }
+
+    public static String generateName() {
+        String name = "";
+        boolean isVowel = false;
+        double probabilityVowel = 0.1;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < random.nextInt(3, 9); j++) {
+                String letters;
+                if (random.nextDouble() < probabilityVowel) {
+                    letters = VOWELS;
+                }
+                else {
+                    letters = CONSONANTS;
+                }
+                char character = letters.charAt(random.nextInt(letters.length()));
+                if (j == 0) {
+                    character = Character.toUpperCase(character);
+                }
+                name += character;
+                isVowel = letters == VOWELS;
+                probabilityVowel = isVowel ? 0.1 : 0.9;
+            }
+            name += ' ';
+        }
+        return name;
+    }
+
+    public static void loadOccupations() {
+        occupations = new ArrayList<>();
+        InputStream input = Player.class.getResourceAsStream("occupations.txt");
+        if (input != null) {
+            try {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+                    String line;
+                    do {
+                        line = reader.readLine();
+                        if (line != null && line.length() > 0) {
+                            occupations.add(line);
+                        }
+                    } while (line != null);
+                }
+            }
+            catch (IOException e) {
+                occupations = null;
+            }
+        }
     }
 
     @Override
