@@ -41,13 +41,20 @@ public class Player extends Entity {
     private FillTransition humanAnimation;
     private Button playerboardButton;
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
-    private static String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
-    private static String VOWELS = "aeiou";
+    private static final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
+    private static final String[] VOWELS = new String[] {
+            "a", "ai", "air", "ar", "are", "au", "aw", "ay",
+            "e", "ea", "ear", "ee", "eer", "eir", "er", "ere", "eu", "ew", "ey", "eye",
+            "i", "ie", "igh", "ir",
+            "o", "oa", "oe", "oi", "oo", "oor", "or", "ou", "ough", "our", "ow", "oy",
+            "u", "ure",
+            "y",
+    };
     private static ArrayList<String> occupations;
 
-    private static AudioClip[] soundsKill = new AudioClip[] {
+    private static final AudioClip[] soundsKill = new AudioClip[] {
             new AudioClip(Player.class.getResource("kill_1.mp3").toExternalForm()),
             new AudioClip(Player.class.getResource("kill_2.mp3").toExternalForm()),
             new AudioClip(Player.class.getResource("kill_3.mp3").toExternalForm()),
@@ -228,29 +235,32 @@ public class Player extends Entity {
     }
 
     public static String generateName() {
-        String name = "";
-        boolean isVowel = false;
+        StringBuilder name = new StringBuilder();
+        boolean isVowel;
         double probabilityVowel = 0.1;
         for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < random.nextInt(3, 9); j++) {
-                String letters;
+            for (int j = 0; j < random.nextInt(2, 5); j++) {
                 if (random.nextDouble() < probabilityVowel) {
-                    letters = VOWELS;
+                    String string = VOWELS[random.nextInt(VOWELS.length)];
+                    if (j == 0) {
+                        string = Character.toUpperCase(string.charAt(0)) + string.substring(1);
+                    }
+                    name.append(string);
+                    isVowel = true;
                 }
                 else {
-                    letters = CONSONANTS;
+                    char character = CONSONANTS.charAt(random.nextInt(CONSONANTS.length()));
+                    if (j == 0) {
+                        character = Character.toUpperCase(character);
+                    }
+                    name.append(character);
+                    isVowel = false;
                 }
-                char character = letters.charAt(random.nextInt(letters.length()));
-                if (j == 0) {
-                    character = Character.toUpperCase(character);
-                }
-                name += character;
-                isVowel = letters == VOWELS;
                 probabilityVowel = isVowel ? 0.1 : 0.9;
             }
-            name += ' ';
+            name.append(' ');
         }
-        return name;
+        return name.toString();
     }
 
     public static void loadOccupations() {
