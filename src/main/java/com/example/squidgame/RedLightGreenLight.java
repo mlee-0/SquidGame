@@ -122,7 +122,9 @@ public class RedLightGreenLight extends Game {
             case RED:
                 if (player.isMoving()) {
                     if (!player.isScheduledKill()) {
-                        player.scheduleKill(now + random.nextLong((long)((next - now)/2.0)));
+                        player.scheduleKill(now +
+                                random.nextLong((long)(0.2 * (next - now)), (long)(0.6 * (next - now)))
+                        );
                     }
                     if (random.nextFloat() < PROBABILITY_STOP/5) {
                         player.stopMove();

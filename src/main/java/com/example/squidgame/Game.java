@@ -20,7 +20,7 @@ abstract public class Game extends AnimationTimer {
     protected long previous;
 
     // The initial X and Y positions for players. Use a negative number to randomize the position within the possible range of values.
-    protected double[] startingPosition = {Entity.X_MIN, Entity.X_MIN};
+    protected double[] startingPosition = {Entity.X_MIN, Entity.Y_MIN};
     // The minimum and maximum possible speeds for players.
     protected double[] playerSpeedRange = {1, 1};
 
