@@ -19,25 +19,25 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application {
+    // The instance of this class accessed by other classes.
     private static Main app;
 
+    // GUI elements.
     private Stage stage;
     private Scene sceneMain;
-
-    private static Game[] games;
-    private static int gameIndex;
-
     private GridPane dashboard;
     private ControllerDashboard controllerDashboard;
     private ControllerPlayerboard controllerPlayerboard;
     Scene scenePlayerboard;
 
+    // Game-related fields.
     private final Random random = new Random();
+    private static Game[] games;
+    private static int gameIndex;
 
     private static final int MAX_PLAYERS = 456;
     private static final long PRIZE_INCREMENT = 100000000;
     private int humanPlayerNumber;
-
     private int remaining;
     private long prize;
 
