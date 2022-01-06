@@ -11,7 +11,7 @@ public class RedLightGreenLight extends Game {
     public enum State { RED, GREEN, TURNING }
     private State state = State.RED;
     private long next = Long.MAX_VALUE;
-    private static final float PROBABILITY_STOP = 0.6f;
+    private static final float PROBABILITY_STOP = 0.5f;
 
     private final Doll doll;
 
@@ -24,7 +24,7 @@ public class RedLightGreenLight extends Game {
             new MediaPlayer(new Media(getClass().getResource("game1_80.wav").toExternalForm())),
     };
 
-    private final Game1Controller controller;
+    private final ControllerGame1 controller;
 
     RedLightGreenLight() {
         NAME = "Red Light, Green Light";
@@ -34,7 +34,7 @@ public class RedLightGreenLight extends Game {
         Y_MIN = 10;
         Y_MAX = 590;
         startingPosition = new double[] {X_MIN, -1};
-        playerSpeedRange = new double[] {0.6, 1.0};
+        playerSpeedRange = new double[] {0.5, 1.0};
 
         doll = new Doll(X_MAX - 25, Y_MAX / 2);
 

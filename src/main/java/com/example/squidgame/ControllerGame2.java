@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
-public class Game2Controller {
+public class ControllerGame2 {
     @FXML
     public Circle circle;
     @FXML

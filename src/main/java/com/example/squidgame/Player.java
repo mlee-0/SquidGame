@@ -190,6 +190,7 @@ public class Player extends Entity {
         playing = false;
         if (!computer) {
             humanAnimation.stop();
+            Main.getApp().updateLabelStatus(true);
         }
         sprite.setFill(Paint.valueOf(Colors.GRAY));
         sprite.setStrokeWidth(0);
@@ -217,6 +218,7 @@ public class Player extends Entity {
 
         if (!computer) {
             humanAnimation.stop();
+            Main.getApp().updateLabelStatus(false);
         }
         PauseTransition killAnimation = new PauseTransition(Duration.millis(1));
         killAnimation.setOnFinished(event -> {
@@ -225,7 +227,7 @@ public class Player extends Entity {
         });
         killAnimation.play();
 
-        soundsKill[random.nextInt(soundsKill.length)].play(computer ? 0.1 : 0.5);
+        soundsKill[random.nextInt(soundsKill.length)].play(computer ? 0.1 : 0.25);
 
         Main app = Main.getApp();
         app.eliminatePlayers(1);

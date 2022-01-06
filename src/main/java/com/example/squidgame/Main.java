@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -27,8 +28,8 @@ public class Main extends Application {
     private static int gameIndex;
 
     private GridPane dashboard;
-    private DashboardController controllerDashboard;
-    private PlayerboardController controllerPlayerboard;
+    private ControllerDashboard controllerDashboard;
+    private ControllerPlayerboard controllerPlayerboard;
     Scene scenePlayerboard;
 
     private final Random random = new Random();
@@ -63,6 +64,13 @@ public class Main extends Application {
         FXMLLoader fxmlLoaderPlayerboard = new FXMLLoader(getClass().getResource("playerboard.fxml"));
         HBox playerboard = fxmlLoaderPlayerboard.load();
         scenePlayerboard = new Scene(playerboard, 600, 400);
+        scenePlayerboard.setOnKeyReleased(event -> {
+            switch (event.getCode()) {
+                case ESCAPE:
+                    musicPlayerboard.stop();
+                    setSceneMain();
+            }
+        });
         controllerPlayerboard = fxmlLoaderPlayerboard.getController();
         controllerPlayerboard.buttonNext.setOnAction(event -> {
             Game game = games[gameIndex];
@@ -75,7 +83,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
         VBox rootMain = fxmlLoader.load();
         sceneMain = new Scene(rootMain, 600, 400);
-        MainController controllerMain = fxmlLoader.getController();
+        ControllerMain controllerMain = fxmlLoader.getController();
         controllerMain.buttonPlay.setOnAction(event -> {
             musicMenu.stop();
             setScenePlayerboard();
@@ -102,8 +110,8 @@ public class Main extends Application {
 
     public static Main getApp() { return app; }
     public GridPane getDashboard() { return dashboard; }
-    public DashboardController getControllerDashboard() { return controllerDashboard; }
-    public PlayerboardController getControllerPlayerboard() { return controllerPlayerboard; }
+    public ControllerDashboard getControllerDashboard() { return controllerDashboard; }
+    public ControllerPlayerboard getControllerPlayerboard() { return controllerPlayerboard; }
 
     public void setSceneMain() {
         stage.setScene(sceneMain);
@@ -242,6 +250,20 @@ public class Main extends Application {
         if (remaining >= 0) {
             controllerDashboard.labelTimer.setText(String.format("%02d:%02d", (int) Math.floor(remaining / 60), (int) Math.floor(remaining % 60)));
         }
+    }
+
+    public void updateLabelStatus() { controllerDashboard.labelStatus.setText(""); }
+    public void updateLabelStatus(boolean pass) {
+        String string;
+        if (pass) {
+            string = "Pass";
+            controllerDashboard.labelStatus.setTextFill(Paint.valueOf(Colors.GREEN));
+        }
+        else {
+            string = "Eliminated";
+            controllerDashboard.labelStatus.setTextFill(Paint.valueOf(Colors.RED));
+        }
+        controllerDashboard.labelStatus.setText(string);
     }
 
     public void updateLabelRemaining() {

@@ -5,7 +5,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <VBox alignment="TOP_CENTER" spacing="10.0"
       style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.squidgame.Game3Controller">
+      fx:controller="com.example.squidgame.ControllerGame3">
 
     <Pane fx:id="pane">
         <Rectangle fx:id="platform1" fill="#515151" height="200.0"/>

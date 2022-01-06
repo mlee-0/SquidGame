@@ -21,7 +21,7 @@ public class Dalgona extends Game {
     private final Canvas canvas;
     private final GraphicsContext gc;
 
-    private final Game2Controller controller;
+    private final ControllerGame2 controller;
 
     Dalgona() {
         NAME = "Dalgona";
@@ -31,7 +31,7 @@ public class Dalgona extends Game {
         Y_MIN = 10;
         Y_MAX = IMAGE_SIZE - 10;
         startingPosition = new double[] {IMAGE_SIZE/2.0, IMAGE_SIZE/2.0};
-        playerSpeedRange = new double[] {0.25, 0.25};
+        playerSpeedRange = new double[] {0.2, 0.2};
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game2.fxml"));
         setRoot(fxmlLoader);

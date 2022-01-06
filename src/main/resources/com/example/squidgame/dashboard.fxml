@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <GridPane alignment="CENTER" hgap="20.0" vgap="0.0" style="-fx-background-color: #000"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.example.squidgame.DashboardController">
+          fx:controller="com.example.squidgame.ControllerDashboard">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
@@ -15,6 +15,7 @@
     <Label text="Number of Players" alignment="BASELINE_LEFT" style="-fx-font-size: 15; -fx-text-fill: #fff" GridPane.columnIndex="0" GridPane.rowIndex="0" />
     <Label fx:id="labelRemaining" alignment="BASELINE_LEFT" style="-fx-font-size: 30; -fx-text-fill: #fff" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
+    <Label fx:id="labelStatus" alignment="BASELINE_CENTER" style="-fx-font-size: 15" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
     <Label fx:id="labelTimer" alignment="BASELINE_CENTER" style="-fx-font-size: 30; -fx-text-fill: #fff" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
     <Label text="Cash Prize" alignment="BASELINE_RIGHT" style="-fx-font-size: 15; -fx-text-fill: #fff" GridPane.columnIndex="2" GridPane.rowIndex="0" />

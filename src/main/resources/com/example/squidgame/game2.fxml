@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Circle?>
 <VBox alignment="TOP_CENTER" spacing="10.0"
       style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.squidgame.Game2Controller">
+      fx:controller="com.example.squidgame.ControllerGame2">
 
     <StackPane>
         <Circle fx:id="circle" fill="#F2C53D"/>

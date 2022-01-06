@@ -8,7 +8,7 @@ public class TugOfWar extends Game {
     private Player[][] teams;
     private final int TEAM_SIZE = 10;
 
-    private final Game3Controller controller;
+    private final ControllerGame3 controller;
 
     TugOfWar() {
         NAME = "Tug-of-War";

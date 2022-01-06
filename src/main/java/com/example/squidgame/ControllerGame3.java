@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-public class Game3Controller {
+public class ControllerGame3 {
     @FXML
     public Pane pane;
     @FXML

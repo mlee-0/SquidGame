@@ -93,6 +93,7 @@ abstract public class Game extends AnimationTimer {
         elapsed = 0;
         previous = 0;
         app.resetPlayers();
+        app.updateLabelStatus();
     }
 
     @Override
