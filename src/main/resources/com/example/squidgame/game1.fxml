@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.layout.VBox?>
-<VBox style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
+<VBox alignment="TOP_CENTER"
+      style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.squidgame.Game1Controller">
 
     <Pane fx:id="pane">
-        <Rectangle fx:id="finishLine" width="15.0">
-        </Rectangle>
+        <Rectangle fx:id="finishLine" width="15.0"/>
     </Pane>
 </VBox>

@@ -19,13 +19,23 @@ abstract public class Game extends AnimationTimer {
     protected long now;
     protected long previous;
 
+    protected double X_MIN;
+    protected double X_MAX;
+    protected double Y_MIN;
+    protected double Y_MAX;
+
     // The initial X and Y positions for players. Use a negative number to randomize the position within the possible range of values.
-    protected double[] startingPosition = {Entity.X_MIN, Entity.Y_MIN};
+    protected double[] startingPosition = {X_MIN, Y_MIN};
     // The minimum and maximum possible speeds for players.
     protected double[] playerSpeedRange = {1, 1};
 
     protected VBox root;
     protected Scene scene;
+
+    public double getXMin() { return X_MIN; }
+    public double getXMax() { return X_MAX; }
+    public double getYMin() { return Y_MIN; }
+    public double getYMax() { return Y_MAX; }
 
     abstract protected Scene getScene();
     public VBox getRoot() { return root; }

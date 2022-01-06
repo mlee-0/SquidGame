@@ -7,11 +7,6 @@ public abstract class Entity {
     protected double y;
     protected double z = 0;
 
-    protected static final double X_MIN = 10;
-    protected static final double X_MAX = 1190;
-    protected static final double Y_MIN = 10;
-    protected static final double Y_MAX = 590;
-
     protected double xSpeed = 0.0;
     protected double ySpeed = 0.0;
     protected double zSpeed = 0.0;
@@ -39,14 +34,17 @@ public abstract class Entity {
 
     public void move() {
         // Keep in bounds.
-        if (x < X_MIN) {
-            x = X_MIN;
+        if (x < Main.getGame().getXMin()) {
+            x = Main.getGame().getXMin();
         }
-        if (y < Y_MIN) {
-            y = Y_MIN;
+        else if (x > Main.getGame().getXMax()) {
+            x = Main.getGame().getXMax();
         }
-        else if (y > Y_MAX) {
-            y = Y_MAX;
+        if (y < Main.getGame().getYMin()) {
+            y = Main.getGame().getYMin();
+        }
+        else if (y > Main.getGame().getYMax()) {
+            y = Main.getGame().getYMax();
         }
 
         double[] speedRange = Main.getGame().playerSpeedRange;

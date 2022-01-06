@@ -13,7 +13,8 @@ public class RedLightGreenLight extends Game {
     private long next = Long.MAX_VALUE;
     private static final float PROBABILITY_STOP = 0.6f;
 
-    private final Doll doll = new Doll(Entity.X_MAX - 25, Entity.Y_MAX / 2);
+    private final Doll doll;
+
     private final MediaPlayer music = new MediaPlayer(new Media(getClass().getResource("game_1.mp3").toExternalForm()));
     private final MediaPlayer[] sounds = new MediaPlayer[] {
             new MediaPlayer(new Media(getClass().getResource("game1_40.wav").toExternalForm())),
@@ -28,19 +29,27 @@ public class RedLightGreenLight extends Game {
     RedLightGreenLight() {
         NAME = "Red Light, Green Light";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
-        startingPosition = new double[] {Entity.X_MIN, -1};
+        X_MIN = 10;
+        X_MAX = 1190;
+        Y_MIN = 10;
+        Y_MAX = 590;
+        startingPosition = new double[] {X_MIN, -1};
         playerSpeedRange = new double[] {0.6, 1.0};
+
+        doll = new Doll(X_MAX - 25, Y_MAX / 2);
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game1.fxml"));
         setRoot(fxmlLoader);
 
         controller = fxmlLoader.getController();
         controller.finishLine.setFill(Paint.valueOf(Colors.PINK));
-        controller.finishLine.setHeight(Entity.Y_MAX);
-        controller.finishLine.setX(Entity.X_MAX - controller.finishLine.getWidth()/2);
+        controller.finishLine.setHeight(Y_MAX);
+        controller.finishLine.setX(X_MAX - controller.finishLine.getWidth()/2);
+        controller.pane.setMaxWidth(X_MAX);
+        controller.pane.setMaxHeight(Y_MAX);
         controller.pane.getChildren().add(doll.getSprite());
 
-        scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
+        scene = new Scene(root, X_MAX + 20, Y_MAX + 100);
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case LEFT:
@@ -80,7 +89,6 @@ public class RedLightGreenLight extends Game {
         for (MediaPlayer sound: sounds) {
             sound.setOnEndOfMedia(() -> {
                 sound.stop();
-//                sound.seek(sound.getStartTime());
                 cycleState();
             });
         }
@@ -146,11 +154,11 @@ public class RedLightGreenLight extends Game {
         double x = player.getX();
         double y = player.getY();
         // Stop playing if reached the end.
-        if (x >= Entity.X_MAX) {
+        if (x >= X_MAX) {
             player.stop();
         }
         // Reverse the direction if at the bounds.
-        if (y < Entity.Y_MIN || y > Entity.Y_MAX && player.isComputer()) {
+        if (y < Y_MIN || y > Y_MAX && player.isComputer()) {
             player.changeYDirection(-1);
         }
     }
@@ -161,8 +169,8 @@ public class RedLightGreenLight extends Game {
         for (Player player: app.getPlayers()) {
             controller.pane.getChildren().add(player.getSprite());
         }
-        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 - 75, Guard.Rank.CIRCLE));
-        app.addGuard(new Guard(Entity.X_MAX - 25, Entity.Y_MAX / 2 + 75, Guard.Rank.CIRCLE));
+        app.addGuard(new Guard(X_MAX - 25, Y_MAX / 2 - 75, Guard.Rank.CIRCLE));
+        app.addGuard(new Guard(X_MAX - 25, Y_MAX / 2 + 75, Guard.Rank.CIRCLE));
         // Make doll and human player appear in front.
         doll.getSprite().toFront();
         app.getHumanPlayer().getSprite().toFront();

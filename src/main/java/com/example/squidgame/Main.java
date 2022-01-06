@@ -43,11 +43,11 @@ public class Main extends Application {
     private final Player[] players = new Player[MAX_PLAYERS];
     private final ArrayList<Guard> guards = new ArrayList<>();
 
-    private double volumeMusic = 0.75;
-    private MediaPlayer musicMenu = new MediaPlayer(new Media(
+    private final double volumeMusic = 0.75;
+    private final MediaPlayer musicMenu = new MediaPlayer(new Media(
             getClass().getResource("menu.mp3").toExternalForm()
     ));
-    private MediaPlayer musicPlayerboard = new MediaPlayer(new Media(
+    private final MediaPlayer musicPlayerboard = new MediaPlayer(new Media(
             getClass().getResource("pregame.mp3").toExternalForm()
     ));
 
@@ -74,7 +74,7 @@ public class Main extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main.fxml"));
         VBox rootMain = fxmlLoader.load();
-        sceneMain = new Scene(rootMain, Entity.X_MAX, Entity.Y_MAX);
+        sceneMain = new Scene(rootMain, 600, 400);
         MainController controllerMain = fxmlLoader.getController();
         controllerMain.buttonPlay.setOnAction(event -> {
             musicMenu.stop();
@@ -216,6 +216,7 @@ public class Main extends Application {
         games = new Game[] {
                 new RedLightGreenLight(),
                 new Dalgona(),
+                new TugOfWar(),
         };
         gameIndex = 0;
         remaining = MAX_PLAYERS;

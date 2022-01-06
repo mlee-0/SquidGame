@@ -165,13 +165,13 @@ public class Player extends Entity {
             x = startingPosition[0];
         }
         else {
-            x = new Random().nextDouble(Entity.X_MIN, Entity.X_MAX);
+            x = new Random().nextDouble(Main.getGame().getXMin(), Main.getGame().getXMax());
         }
         if (startingPosition[1] >= 0) {
             y = startingPosition[1];
         }
         else {
-            y = new Random().nextDouble(Entity.Y_MIN, Entity.Y_MAX);
+            y = new Random().nextDouble(Main.getGame().getYMin(), Main.getGame().getYMax());
         }
         xDirection = 0;
         yDirection = 0;

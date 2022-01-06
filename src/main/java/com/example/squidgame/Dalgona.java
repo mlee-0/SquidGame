@@ -26,6 +26,10 @@ public class Dalgona extends Game {
     Dalgona() {
         NAME = "Dalgona";
         TIME_LIMIT = (long) (2 * 60 * 1e9);
+        X_MIN = 10;
+        X_MAX = IMAGE_SIZE - 10;
+        Y_MIN = 10;
+        Y_MAX = IMAGE_SIZE - 10;
         startingPosition = new double[] {IMAGE_SIZE/2.0, IMAGE_SIZE/2.0};
         playerSpeedRange = new double[] {0.25, 0.25};
 
@@ -48,7 +52,7 @@ public class Dalgona extends Game {
             checkPassed();
         });
 
-        scene = new Scene(root, Entity.X_MAX + 20, Entity.Y_MAX + 100);
+        scene = new Scene(root, X_MAX + 20, Y_MAX + 100);
         scene.setOnKeyPressed(event -> {
             Player human = Main.getApp().getHumanPlayer();
             switch (event.getCode()) {
