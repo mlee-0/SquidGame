@@ -131,6 +131,12 @@ public class Player extends Entity {
         sprite.setCenterY(y);
     }
 
+    public void move(double xSpeed, double ySpeed) {
+        super.move(xSpeed, ySpeed);
+        sprite.setCenterX(x);
+        sprite.setCenterY(y);
+    }
+
     public void setX(double x) {
         super.setX(x);
         sprite.setCenterX(x);
@@ -139,8 +145,6 @@ public class Player extends Entity {
         super.setY(y);
         sprite.setCenterY(y);
     }
-    public void changeXDirection(int multiplier) { xDirection *= multiplier; }
-    public void changeYDirection(int multiplier) { yDirection *= multiplier; }
 
     public void scheduleStartMove(long time) {
         if (!scheduledStartMove) {

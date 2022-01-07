@@ -12,6 +12,8 @@ public class TugOfWar extends Game {
     private final Player[][] activeTeams = new Player[2][];
     // Index of team containing the human player.
     private int humanTeamIndex;
+    // Collective speed of all players on both teams.
+    private double speed;
 
     private final ControllerGame3 controller;
 
@@ -73,12 +75,20 @@ public class TugOfWar extends Game {
 
     @Override
     public void handle(long now) {
+        double speed = 0;
+        for (Player[] team: activeTeams) {
+            for (Player player: team) {
+                speed += player.getXDirection() * player.getStrength();
+            }
+        }
+        this.speed = speed;
+
         super.handle(now);
     }
 
     @Override
     protected void handlePlayer(Player player) {
-
+        player.move(speed, 0);
     }
 
     @Override
@@ -109,10 +119,14 @@ public class TugOfWar extends Game {
         for (Player[] team: activeTeams) {
             int i = 0;
             for (Player player: team) {
+                int xDirection = side == 0 ? -1 : +1;
                 player.setX(
-                        X_MAX/2.0 + (side == 0 ? -1 : +1) * (X_MAX*0.2 + i * SPACING)
+                        X_MAX/2.0 + xDirection * (X_MAX*0.2 + i * SPACING)
                 );
                 player.setY(Y_MAX/2.0);
+                if (player.isComputer()) {
+                    player.setMoveX(xDirection);
+                }
                 controller.pane.getChildren().add(player.getSprite());
                 i += 1;
             }

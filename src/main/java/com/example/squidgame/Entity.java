@@ -30,10 +30,13 @@ public abstract class Entity {
     public double getY() { return y; }
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
+    public int getXDirection() { return xDirection; }
+    public int getYDirection() { return yDirection; }
+    public void changeXDirection(int multiplier) { xDirection *= multiplier; }
+    public void changeYDirection(int multiplier) { yDirection *= multiplier; }
     public boolean isMoving() { return xSpeed > 0.0 || ySpeed > 0.0; }
 
-    public void move() {
-        // Keep in bounds.
+    public void keepInBounds() {
         if (x < Main.getGame().getXMin()) {
             x = Main.getGame().getXMin();
         }
@@ -46,13 +49,22 @@ public abstract class Entity {
         else if (y > Main.getGame().getYMax()) {
             y = Main.getGame().getYMax();
         }
+    }
 
+    public void move() {
+        keepInBounds();
         double[] speedRange = Main.getGame().playerSpeedRange;
         double speed = speedRange[0] + (speedRange[1] - speedRange[0]) * relativeSpeed;
         xSpeed = xDirection != 0 ? speed : 0;
         ySpeed = yDirection != 0 ? speed : 0;
         x += xDirection * xSpeed;
         y += yDirection * ySpeed;
+    }
+
+    public void move(double xSpeed, double ySpeed) {
+        keepInBounds();
+        x += xSpeed;
+        y += ySpeed;
     }
 
     public boolean isAlive() { return alive; }
