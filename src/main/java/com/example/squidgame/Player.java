@@ -38,6 +38,7 @@ public class Player extends Entity {
     private boolean scheduledStopMove = false;
 
     private final Circle sprite;
+    private final int SPRITE_SIZE = 5;
     private FillTransition humanAnimation;
     private Button playerboardButton;
 
@@ -71,7 +72,7 @@ public class Player extends Entity {
 
         relativeSpeed = new Random().nextDouble(0, 1);
 
-        sprite = new Circle(x, y, 5);
+        sprite = new Circle(x, y, SPRITE_SIZE);
         // Create an animation if a human player.
         if (!computer) {
             humanAnimation = new FillTransition(
@@ -95,6 +96,7 @@ public class Player extends Entity {
     public boolean isPlaying() { return playing; }
     public boolean isCutting() { return cutting; }
     public boolean isLicking() { return licking; }
+    public void setPlaying(boolean playing) { this.playing  = playing; }
     public void setCutting(boolean cutting) { this.cutting = cutting; }
 
     public void setLicking(boolean licking) { this.licking = licking; }
@@ -129,12 +131,29 @@ public class Player extends Entity {
         super.move();
         sprite.setCenterX(x);
         sprite.setCenterY(y);
+        updateSpriteSize();
     }
 
     public void move(double xSpeed, double ySpeed) {
         super.move(xSpeed, ySpeed);
         sprite.setCenterX(x);
         sprite.setCenterY(y);
+        updateSpriteSize();
+    }
+
+    public void updateSpriteSize() {
+        final double Z_MIN = Main.getGame().Z_MIN;
+        final double Z_MAX = Main.getGame().Z_MAX;
+        if (z < 0) {
+            sprite.setRadius(
+                    SPRITE_SIZE * (0.5 + 0.5 * (z - Z_MIN) / (0 - Z_MIN))
+            );
+        }
+        else if (z > 0) {
+            sprite.setRadius(
+                    SPRITE_SIZE * (1.0 + 0.5 * (z / Z_MAX))
+            );
+        }
     }
 
     public void setX(double x) {
@@ -156,6 +175,12 @@ public class Player extends Entity {
         if (!scheduledStopMove) {
             timeStopMove = time;
             scheduledStopMove = true;
+        }
+    }
+
+    public void jump() {
+        if (z == 0) {
+            zSpeed = 10;
         }
     }
 
@@ -184,6 +209,10 @@ public class Player extends Entity {
         else {
             y = new Random().nextDouble(Main.getGame().getYMin(), Main.getGame().getYMax());
         }
+        z = 0;
+        xSpeed = 0;
+        ySpeed = 0;
+        zSpeed = 0;
         xDirection = 0;
         yDirection = 0;
         zDirection = 0;

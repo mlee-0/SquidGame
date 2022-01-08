@@ -23,6 +23,8 @@ abstract public class Game extends AnimationTimer {
     protected double X_MAX;
     protected double Y_MIN;
     protected double Y_MAX;
+    protected double Z_MIN;
+    protected double Z_MAX = 100;
 
     // The initial X and Y positions for players. Use a negative number to randomize the position within the possible range of values.
     protected double[] startingPosition = {X_MIN, Y_MIN};
@@ -36,6 +38,8 @@ abstract public class Game extends AnimationTimer {
     public double getXMax() { return X_MAX; }
     public double getYMin() { return Y_MIN; }
     public double getYMax() { return Y_MAX; }
+    public double getZMin() { return Z_MIN; }
+    public double getZMax() { return Z_MAX; }
 
     abstract protected Scene getScene();
     public VBox getRoot() { return root; }
