@@ -2,6 +2,8 @@ package com.example.squidgame;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 public class ControllerGame3 {
@@ -15,4 +17,8 @@ public class ControllerGame3 {
     public Rectangle platform2;
     @FXML
     public Rectangle lineCenter2;
+    @FXML
+    public Line rope;
+    @FXML
+    public Polygon flag;
 }

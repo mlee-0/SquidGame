@@ -3,6 +3,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.shape.Line?>
 <VBox alignment="TOP_CENTER" spacing="10.0"
       style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.squidgame.ControllerGame3">
@@ -12,5 +14,7 @@
         <Rectangle fx:id="lineCenter1" fill="#FFBF00" height="15.0"/>
         <Rectangle fx:id="platform2" fill="#515151" height="200.0"/>
         <Rectangle fx:id="lineCenter2" fill="#FFBF00" height="15.0"/>
+        <Line fx:id="rope" stroke="#E6E6E6" strokeWidth="7.5"/>
+        <Polygon fx:id="flag"/>
     </Pane>
 </VBox>

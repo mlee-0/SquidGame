@@ -226,7 +226,7 @@ public class Main extends Application {
                 new Dalgona(),
                 new TugOfWar(),
         };
-        gameIndex = 0;
+        gameIndex = 2;
         remaining = MAX_PLAYERS;
         prize = 0;
         updateLabelRemaining();
