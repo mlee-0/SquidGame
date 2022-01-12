@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.shape.Line?>
 <VBox alignment="TOP_CENTER" spacing="10.0"
-      style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
+      style="-fx-background-color: #000" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.squidgame.ControllerGame3">
 
     <Pane fx:id="pane">

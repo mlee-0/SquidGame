@@ -22,6 +22,10 @@ public class TugOfWar extends Game {
     private final double[] BOUNDS = {0.4, 0.6};
     // Height and width of flag.
     private final double[] FLAG_SIZE = {15.0, 30.0};
+    // Time, in nanoseconds, when the human starts pulling.
+    private long timePull;
+    // Duration, in nanoseconds, for which the initial pull by the human lasts.
+    private final double PULL_DURATION = 0.25e9;
 
     private final ControllerGame3 controller;
 
@@ -64,9 +68,11 @@ public class TugOfWar extends Game {
             switch (event.getCode()) {
                 case LEFT:
                     human.setMoveX(-1);
+                    timePull = now;
                     break;
                 case RIGHT:
                     human.setMoveX(+1);
+                    timePull = now;
                     break;
             }
         });
@@ -96,8 +102,17 @@ public class TugOfWar extends Game {
             List<Player> team = teams.get(teamIndex);
             for (Player player: team) {
                 if (player.isAlive()) {
-                    speed += player.getXDirection() *
-                            player.getStrength() * (player.isFalling() ? 0.5 : 1.0);
+                    int xDirection = player.getXDirection();
+                    if (xDirection != 0) {
+                        double speedIncrement = player.getStrength() * (player.isFalling() ? 0.5 : 1.0);
+                        if (!player.isComputer() && !player.isFalling()) {
+                            long elapsed = now - timePull;
+                            if (elapsed <= PULL_DURATION) {
+                                speedIncrement *= 1 + 2 * (1 - elapsed / PULL_DURATION);
+                            }
+                        }
+                        speed += xDirection * speedIncrement;
+                    }
                 }
             }
             // Position the rope.
