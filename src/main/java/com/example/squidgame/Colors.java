@@ -1,5 +1,8 @@
 package com.example.squidgame;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+
 public class Colors {
     public static String PLAYER = "#009FBF";
     public static String PLAYER_DARK = "#006A7F";
@@ -10,6 +13,8 @@ public class Colors {
     public static String RED_LIGHT = "#FFB6B6";
     public static String GREEN = "#00BF60";
     public static String GREEN_LIGHT = "#9EE7C2";
+    public static Paint DALGONA = Color.web("hsl(45, 75%, 95%)");
+    public static Paint DALGONA_DARK = Color.web("hsl(45, 75%, 60%)");
 
     public static String GRAY = "#BFBFBF";
     public static String WHITE = "#FFF";

@@ -108,4 +108,21 @@ abstract public class Game extends AnimationTimer {
 
     @Override
     public String toString() { return NAME; }
+
+    protected void onEscapePress() {}
+    protected void onEscapeRelease() { stop(); System.out.printf("Quitting %s\n", NAME); }
+    protected void onLeftPress() { app.getHumanPlayer().setMoveX(-1); }
+    protected void onLeftRelease() { app.getHumanPlayer().setMoveX(0); }
+    protected void onRightPress() { app.getHumanPlayer().setMoveX(+1); }
+    protected void onRightRelease() { app.getHumanPlayer().setMoveX(0); }
+    protected void onUpPress() { app.getHumanPlayer().setMoveY(-1); }
+    protected void onUpRelease() { app.getHumanPlayer().setMoveY(0); }
+    protected void onDownPress() { app.getHumanPlayer().setMoveY(+1); }
+    protected void onDownRelease() { app.getHumanPlayer().setMoveY(0); }
+    protected void onSpacePress() {}
+    protected void onSpaceRelease() {}
+    protected void onCPress() {}
+    protected void onCRelease() {}
+    protected void onLPress() {}
+    protected void onLRelease() {}
 }

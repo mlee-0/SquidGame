@@ -63,32 +63,35 @@ public class TugOfWar extends Game {
         controller.flag.setLayoutY((Y_MAX - controller.rope.getStrokeWidth())/2);
 
         scene = new Scene(root, X_MAX + 20, Y_MAX + 100);
-        scene.setOnKeyPressed(event -> {
-            Player human = Main.getApp().getHumanPlayer();
-            switch (event.getCode()) {
-                case LEFT:
-                    human.setMoveX(-1);
-                    timePull = now;
-                    break;
-                case RIGHT:
-                    human.setMoveX(+1);
-                    timePull = now;
-                    break;
-            }
-        });
-        scene.setOnKeyReleased(event -> {
-            Player human = app.getHumanPlayer();
-            switch (event.getCode()) {
-                case ESCAPE:
-                    stop();
-                    System.out.printf("Quitting %s\n", NAME);
-                    break;
-                case LEFT:
-                case RIGHT:
-                    human.setMoveX(0);
-                    break;
-            }
-        });
+        KeyEventHandler handler = new KeyEventHandler();
+        scene.setOnKeyPressed(handler);
+        scene.setOnKeyReleased(handler);
+//        scene.setOnKeyPressed(event -> {
+//            Player human = app.getHumanPlayer();
+//            switch (event.getCode()) {
+//                case LEFT:
+//                    human.setMoveX(-1);
+//                    timePull = now;
+//                    break;
+//                case RIGHT:
+//                    human.setMoveX(+1);
+//                    timePull = now;
+//                    break;
+//            }
+//        });
+//        scene.setOnKeyReleased(event -> {
+//            Player human = app.getHumanPlayer();
+//            switch (event.getCode()) {
+//                case ESCAPE:
+//                    stop();
+//                    System.out.printf("Quitting %s\n", NAME);
+//                    break;
+//                case LEFT:
+//                case RIGHT:
+//                    human.setMoveX(0);
+//                    break;
+//            }
+//        });
     }
 
     public Scene getScene() { return scene; }
@@ -202,4 +205,17 @@ public class TugOfWar extends Game {
         super.stop();
         app.setScenePlayerboard();
     }
+
+    protected void onLeftPress() {
+        app.getHumanPlayer().setMoveX(-1);
+        timePull = now;
+    }
+    protected void onRightPress() {
+        app.getHumanPlayer().setMoveX(+1);
+        timePull = now;
+    }
+    protected void onUpPress() {}
+    protected void onUpRelease() {}
+    protected void onDownPress() {}
+    protected void onDownRelease() {}
 }

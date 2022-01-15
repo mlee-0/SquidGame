@@ -50,38 +50,9 @@ public class RedLightGreenLight extends Game {
         controller.pane.getChildren().add(doll.getSprite());
 
         scene = new Scene(root, X_MAX + 20, Y_MAX + 100);
-        scene.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case LEFT:
-                    app.getHumanPlayer().setMoveX(-1);
-                    break;
-                case RIGHT:
-                    app.getHumanPlayer().setMoveX(+1);
-                    break;
-                case UP:
-                    app.getHumanPlayer().setMoveY(-1);
-                    break;
-                case DOWN:
-                    app.getHumanPlayer().setMoveY(+1);
-                    break;
-            }
-        });
-        scene.setOnKeyReleased(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    stop();
-                    System.out.printf("Quitting %s\n", NAME);
-                    break;
-                case LEFT:
-                case RIGHT:
-                    app.getHumanPlayer().setMoveX(0);
-                    break;
-                case UP:
-                case DOWN:
-                    app.getHumanPlayer().setMoveY(0);
-                    break;
-            }
-        });
+        KeyEventHandler handler = new KeyEventHandler();
+        scene.setOnKeyPressed(handler);
+        scene.setOnKeyReleased(handler);
 
         music.setCycleCount(MediaPlayer.INDEFINITE);
         music.setVolume(Main.getApp().getVolumeMusic());

@@ -12,7 +12,7 @@
       fx:controller="com.example.squidgame.ControllerGame2">
 
     <StackPane>
-        <Circle fx:id="circle" fill="#F2C53D"/>
+        <Circle fx:id="circle"/>
         <ImageView fx:id="imageView"/>
         <Canvas fx:id="canvas" style="-fx-background-color: #000"/>
         <Pane fx:id="pane"/>

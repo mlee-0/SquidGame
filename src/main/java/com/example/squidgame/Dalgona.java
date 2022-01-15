@@ -18,6 +18,7 @@ public class Dalgona extends Game {
     private Image image;
     private static final int IMAGE_SIZE = 500;
     private static final int DRAW_SIZE = 5;
+    private static final int LICK_SIZE = 50;
     private final Canvas canvas;
     private final GraphicsContext gc;
 
@@ -41,7 +42,7 @@ public class Dalgona extends Game {
         canvas.setWidth(IMAGE_SIZE);
         canvas.setHeight(IMAGE_SIZE);
         gc = canvas.getGraphicsContext2D();
-        gc.setFill(Paint.valueOf(Colors.BLACK));
+        controller.circle.setFill(Colors.DALGONA);
         controller.circle.setRadius(IMAGE_SIZE / 2.0);
         controller.circle.setCenterX(IMAGE_SIZE / 2.0);
         controller.circle.setCenterY(IMAGE_SIZE / 2.0);
@@ -53,52 +54,9 @@ public class Dalgona extends Game {
         });
 
         scene = new Scene(root, X_MAX + 20, Y_MAX + 100);
-        scene.setOnKeyPressed(event -> {
-            Player human = Main.getApp().getHumanPlayer();
-            switch (event.getCode()) {
-                case LEFT:
-                    human.setMoveX(-1);
-                    break;
-                case RIGHT:
-                    human.setMoveX(+1);
-                    break;
-                case UP:
-                    human.setMoveY(-1);
-                    break;
-                case DOWN:
-                    human.setMoveY(+1);
-                    break;
-                case SPACE:
-                    human.setCutting(true);
-                    break;
-                case L:
-                    human.setLicking(true);
-                    break;
-            }
-        });
-        scene.setOnKeyReleased(event -> {
-            Player human = app.getHumanPlayer();
-            switch (event.getCode()) {
-                case ESCAPE:
-                    stop();
-                    System.out.printf("Quitting %s\n", NAME);
-                    break;
-                case LEFT:
-                case RIGHT:
-                    human.setMoveX(0);
-                    break;
-                case UP:
-                case DOWN:
-                    human.setMoveY(0);
-                    break;
-                case SPACE:
-                    human.setCutting(false);
-                    break;
-                case L:
-                    human.setLicking(false);
-                    break;
-            }
-        });
+        KeyEventHandler handler = new KeyEventHandler();
+        scene.setOnKeyPressed(handler);
+        scene.setOnKeyReleased(handler);
     }
 
     public Scene getScene() { return scene; }
@@ -122,11 +80,13 @@ public class Dalgona extends Game {
             for (int column = 0; column < IMAGE_SIZE; column++) {
                 Color colorCanvas = pixelReaderCanvas.getColor(row, column);
                 Color colorOriginal = pixelReaderOriginal.getColor(row, column);
-                boolean isOutline = colorOriginal.getOpacity() > 0;
-                boolean isDrawn = colorCanvas.getBrightness() < 1;
-                if (isOutline || isDrawn) {
+                // Whether this pixel should be drawn on.
+                boolean isTarget = colorOriginal.getOpacity() > 0;
+                // Whether this pixel is drawn on.
+                boolean isDrawn = colorCanvas.getBrightness() == 0;
+                if (isTarget || isDrawn) {
                     numberChecked += 1;
-                    if (isOutline && isDrawn) {
+                    if (isTarget && isDrawn) {
                         numberMatches += 1;
                     }
                 }
@@ -157,6 +117,14 @@ public class Dalgona extends Game {
                     human.getY() - DRAW_SIZE/2.0,
                     DRAW_SIZE,
                     DRAW_SIZE
+            );
+        }
+        else if (human.isLicking()) {
+            gc.fillOval(
+                    human.getX() - LICK_SIZE/2.0,
+                    human.getY() - LICK_SIZE/2.0,
+                    LICK_SIZE,
+                    LICK_SIZE
             );
         }
 
@@ -199,4 +167,21 @@ public class Dalgona extends Game {
         super.stop();
         app.setScenePlayerboard();
     }
+
+    protected void onCPress() {
+        gc.setFill(Paint.valueOf(Colors.BLACK));
+        gc.setGlobalAlpha(1.0);
+        Player human = app.getHumanPlayer();
+        human.setCutting(true);
+        human.setLicking(false);
+    }
+    protected void onCRelease() { app.getHumanPlayer().setCutting(false);}
+    protected void onLPress() {
+        gc.setFill(Colors.DALGONA_DARK);
+        gc.setGlobalAlpha(0.01);
+        Player human = app.getHumanPlayer();
+        human.setLicking(true);
+        human.setCutting(false);
+    }
+    protected void onLRelease() { app.getHumanPlayer().setLicking(false); }
 }
