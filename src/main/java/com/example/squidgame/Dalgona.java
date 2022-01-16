@@ -4,9 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -16,6 +15,7 @@ public class Dalgona extends Game {
             "dalgona_circle.png", "dalgona_triangle.png", "dalgona_star.png", "dalgona_umbrella.png"
     };
     private Image image;
+    private PixelReader imagePixelReader;
     private static final int IMAGE_SIZE = 500;
     private static final int DRAW_SIZE = 5;
     private static final int LICK_SIZE = 50;
@@ -42,6 +42,7 @@ public class Dalgona extends Game {
         canvas.setWidth(IMAGE_SIZE);
         canvas.setHeight(IMAGE_SIZE);
         gc = canvas.getGraphicsContext2D();
+        gc.setGlobalBlendMode(BlendMode.DARKEN);
         controller.circle.setFill(Colors.DALGONA);
         controller.circle.setRadius(IMAGE_SIZE / 2.0);
         controller.circle.setCenterX(IMAGE_SIZE / 2.0);
@@ -112,20 +113,64 @@ public class Dalgona extends Game {
         Player human = app.getHumanPlayer();
         human.move();
         if (human.isCutting()) {
-            gc.fillOval(
-                    human.getX() - DRAW_SIZE/2.0,
-                    human.getY() - DRAW_SIZE/2.0,
-                    DRAW_SIZE,
-                    DRAW_SIZE
-            );
+            int x = (int) human.getX();
+            int y = (int) human.getY();
+            WritableImage writableImage = new WritableImage(IMAGE_SIZE, IMAGE_SIZE);
+            canvas.snapshot(null, writableImage);
+
+            // Check if any pixel within a specified distance is licked.
+            boolean lickedNearby = false;
+            loop:
+            for (int distance = 1; distance < LICK_SIZE / 2; distance++) {
+                for (int row: new int[] {-1, 1}) {
+                    for (int column: new int[] {-1, 1}) {
+                        double brightness = writableImage.getPixelReader().getColor(x+column, y+row).getBrightness();
+                        if (brightness > 0 && brightness < 1) {
+                            lickedNearby = true;
+                            break loop;
+                        }
+                    }
+                }
+            }
+            // Human is cutting a licked area.
+            if (lickedNearby) {
+//                int[] buffer = new int[searchDistance * searchDistance];
+//                imagePixelReader.getPixels(
+//                        x - searchDistance, y - searchDistance, searchDistance, searchDistance,
+//                        PixelFormat.getIntArgbInstance(), buffer, 0, 0
+//                );
+
+                // The distance in all directions from the player to be searched for a cutting location.
+                int searchDistance = LICK_SIZE / 4;
+                // The smallest distance found.
+                double minDistance = IMAGE_SIZE;
+                // The row and column at which the smallest distance was found.
+                int rowCut = -1;
+                int columnCut = -1;
+                for (int column = x - searchDistance; column < x + searchDistance; column++) {
+                    for (int row = y - searchDistance; row < y + searchDistance; row++) {
+                        if (imagePixelReader.getColor(column, row).getOpacity() > 0) {
+                            double distance = Math.sqrt(Math.pow(column - x, 2) + Math.pow(row - y, 2));
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                rowCut = row;
+                                columnCut = column;
+                            }
+                        }
+                    }
+                }
+                // Cut on the line at the closest pixel found, if any.
+                if (rowCut > 0 && columnCut > 0) {
+                    gc.fillOval(columnCut - DRAW_SIZE/2.0, rowCut - DRAW_SIZE/2.0, DRAW_SIZE, DRAW_SIZE);
+                }
+            }
+            // Human is cutting a dry pixel.
+            else {
+                gc.fillOval(human.getX() - DRAW_SIZE/2.0, human.getY() - DRAW_SIZE/2.0, DRAW_SIZE, DRAW_SIZE);
+            }
         }
         else if (human.isLicking()) {
-            gc.fillOval(
-                    human.getX() - LICK_SIZE/2.0,
-                    human.getY() - LICK_SIZE/2.0,
-                    LICK_SIZE,
-                    LICK_SIZE
-            );
+            gc.fillOval(human.getX() - LICK_SIZE/2.0, human.getY() - LICK_SIZE/2.0, LICK_SIZE, LICK_SIZE);
         }
 
         if (random.nextFloat() < 0.01 * elapsed/TIME_LIMIT) {
@@ -159,6 +204,7 @@ public class Dalgona extends Game {
                 getClass().getResource(files[random.nextInt(files.length)]).toExternalForm(),
                 IMAGE_SIZE, IMAGE_SIZE, true, true
         );
+        imagePixelReader = image.getPixelReader();
         controller.imageView.setImage(image);
     }
 
