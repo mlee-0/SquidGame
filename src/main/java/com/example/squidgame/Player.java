@@ -38,7 +38,7 @@ public class Player extends Entity {
     private boolean scheduledStopMove = false;
 
     private final Circle sprite;
-    private final int SPRITE_SIZE = 5;
+    private static final int SPRITE_SIZE = 5;
     private FillTransition humanAnimation;
     private Button playerboardButton;
 

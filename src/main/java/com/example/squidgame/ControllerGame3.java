@@ -18,7 +18,7 @@ public class ControllerGame3 {
     @FXML
     public Rectangle lineCenter2;
     @FXML
-    public Line rope;
+    public Rectangle rope;
     @FXML
     public Polygon flag;
 }

@@ -55,43 +55,17 @@ public class TugOfWar extends Game {
         controller.lineCenter2.setY((Y_MAX - controller.lineCenter2.getHeight())/2);
         controller.pane.setMaxWidth(X_MAX);
         controller.pane.setMaxHeight(Y_MAX);
-        controller.rope.setStartY(Y_MAX/2);
-        controller.rope.setEndY(Y_MAX/2);
+        controller.rope.setX((X_MAX - controller.rope.getWidth())/2);
+        controller.rope.setY((Y_MAX - controller.rope.getHeight())/2);
         controller.flag.setFill(Paint.valueOf(Colors.PINK));
         controller.flag.getPoints().addAll(0.0, 0.0, FLAG_SIZE[1]/2, FLAG_SIZE[0], FLAG_SIZE[1], 0.0);
-//        controller.flag.setLayoutX((X_MAX - FLAG_SIZE[1])/2);
-        controller.flag.setLayoutY((Y_MAX - controller.rope.getStrokeWidth())/2);
+        controller.flag.setLayoutX((X_MAX - FLAG_SIZE[1])/2);
+        controller.flag.setLayoutY((Y_MAX - controller.rope.getHeight())/2);
 
         scene = new Scene(root, X_MAX + 20, Y_MAX + 100);
         KeyEventHandler handler = new KeyEventHandler();
         scene.setOnKeyPressed(handler);
         scene.setOnKeyReleased(handler);
-//        scene.setOnKeyPressed(event -> {
-//            Player human = app.getHumanPlayer();
-//            switch (event.getCode()) {
-//                case LEFT:
-//                    human.setMoveX(-1);
-//                    timePull = now;
-//                    break;
-//                case RIGHT:
-//                    human.setMoveX(+1);
-//                    timePull = now;
-//                    break;
-//            }
-//        });
-//        scene.setOnKeyReleased(event -> {
-//            Player human = app.getHumanPlayer();
-//            switch (event.getCode()) {
-//                case ESCAPE:
-//                    stop();
-//                    System.out.printf("Quitting %s\n", NAME);
-//                    break;
-//                case LEFT:
-//                case RIGHT:
-//                    human.setMoveX(0);
-//                    break;
-//            }
-//        });
     }
 
     public Scene getScene() { return scene; }
@@ -111,26 +85,19 @@ public class TugOfWar extends Game {
                         if (!player.isComputer() && !player.isFalling()) {
                             long elapsed = now - timePull;
                             if (elapsed <= PULL_DURATION) {
-                                speedIncrement *= 1 + 2 * (1 - elapsed / PULL_DURATION);
+                                speedIncrement *= 1 + 5 * (1 - elapsed / PULL_DURATION);
                             }
                         }
                         speed += xDirection * speedIncrement;
                     }
                 }
             }
-            // Position the rope.
-            double xEnd = team.get(team.size() - 1).getX();
-            if (side == 0) {
-                controller.rope.setStartX(xEnd);
-            }
-            else if (side == 1) {
-                controller.rope.setEndX(xEnd);
-            }
             side += 1;
         }
         this.speed = speed / (TEAM_SIZE * 1.0);
-        // Position the flag.
-        controller.flag.setLayoutX((controller.rope.getStartX() + controller.rope.getEndX() - FLAG_SIZE[1])/2);
+        // Position the rope and flag.
+        controller.rope.setX(controller.rope.getX() + this.speed);
+        controller.flag.setLayoutX(controller.flag.getLayoutX() + this.speed);
 
         super.handle(now);
     }
@@ -165,7 +132,7 @@ public class TugOfWar extends Game {
             int teamIndex = i % numberTeams;
             int playerIndex = i / numberTeams;
             if (playerIndex == 0) {
-                teams.add(teamIndex, new ArrayList<Player>());
+                teams.add(teamIndex, new ArrayList<>());
             }
             teams.get(teamIndex).add(playerIndex, playingPlayers[i]);
             if (!playingPlayers[i].isComputer()) {
