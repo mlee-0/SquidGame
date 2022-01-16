@@ -3,6 +3,7 @@ package com.example.squidgame;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
@@ -37,6 +38,12 @@ public class TugOfWar extends Game {
         Y_MIN = 0;
         Y_MAX = 300;
         Z_MIN = -900;
+
+        soundsKill = new AudioClip[] {
+                new AudioClip(Player.class.getResource("fall_1.mp3").toExternalForm()),
+                new AudioClip(Player.class.getResource("fall_2.mp3").toExternalForm()),
+                new AudioClip(Player.class.getResource("fall_3.mp3").toExternalForm()),
+        };
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game3.fxml"));
         FXMLLoader fxmlLoaderPlatform = new FXMLLoader(getClass().getResource("platform.fxml"));

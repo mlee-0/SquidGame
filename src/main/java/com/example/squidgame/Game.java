@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 
 import java.io.IOException;
 import java.util.Random;
@@ -30,6 +31,12 @@ abstract public class Game extends AnimationTimer {
     protected double[] startingPosition = {X_MIN, Y_MIN};
     // The minimum and maximum possible speeds for players.
     protected double[] playerSpeedRange = {1, 1};
+    // Sound files played when players die.
+    protected AudioClip[] soundsKill = new AudioClip[] {
+            new AudioClip(Player.class.getResource("kill_1.mp3").toExternalForm()),
+            new AudioClip(Player.class.getResource("kill_2.mp3").toExternalForm()),
+            new AudioClip(Player.class.getResource("kill_3.mp3").toExternalForm()),
+    };
 
     protected VBox root;
     protected Scene scene;
@@ -41,10 +48,13 @@ abstract public class Game extends AnimationTimer {
     public double getZMin() { return Z_MIN; }
     public double getZMax() { return Z_MAX; }
 
+    // Return a random kill sound file.
+    public AudioClip getSoundKill() {
+        return soundsKill[random.nextInt(soundsKill.length)];
+    }
+
     abstract protected Scene getScene();
     public VBox getRoot() { return root; }
-    abstract protected Pane getPane();
-
     protected void setRoot(FXMLLoader fxmlLoader) {
         try {
             root = fxmlLoader.load();
@@ -53,6 +63,7 @@ abstract public class Game extends AnimationTimer {
             root = new VBox();
         }
     }
+    abstract protected Pane getPane();
 
     @Override
     public void handle(long now) {

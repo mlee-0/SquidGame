@@ -55,12 +55,6 @@ public class Player extends Entity {
     };
     private static ArrayList<String> occupations;
 
-    private static final AudioClip[] soundsKill = new AudioClip[] {
-            new AudioClip(Player.class.getResource("kill_1.mp3").toExternalForm()),
-            new AudioClip(Player.class.getResource("kill_2.mp3").toExternalForm()),
-            new AudioClip(Player.class.getResource("kill_3.mp3").toExternalForm()),
-    };
-
     Player(int playerNumber, boolean computer) {
         this.playerNumber = playerNumber;
         this.computer = computer;
@@ -256,9 +250,10 @@ public class Player extends Entity {
         xSpeed = 0.0;
         ySpeed = 0.0;
 
+        Main app = Main.getApp();
         if (!computer) {
             humanAnimation.stop();
-            Main.getApp().updateLabelStatus(false);
+            app.updateLabelStatus(false);
         }
         PauseTransition killAnimation = new PauseTransition(Duration.millis(1));
         killAnimation.setOnFinished(event -> {
@@ -266,10 +261,8 @@ public class Player extends Entity {
             sprite.setStrokeWidth(0);
         });
         killAnimation.play();
+        Main.getGame().getSoundKill().play(computer ? 0.1 : 0.25);
 
-        soundsKill[random.nextInt(soundsKill.length)].play(computer ? 0.1 : 0.25);
-
-        Main app = Main.getApp();
         app.eliminatePlayers(1);
         app.getControllerPlayerboard().board.getChildren().remove(playerboardButton);
 
