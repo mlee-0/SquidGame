@@ -83,9 +83,15 @@ public class TugOfWar extends Game {
     @Override
     public void handle(long now) {
         speed = maxSpeed * TEAM_SIZE;
-        for (int teamIndex: ACTIVE_TEAMS) {
+        for (int i = 0; i < ACTIVE_TEAMS.length; i++) {
+            int teamIndex = ACTIVE_TEAMS[i];
             List<Player> team = teams.get(teamIndex);
+            // Whether all players on this team have been eliminated or have started falling.
+            boolean teamEliminated = true;
+            // Calculate the collective speed using the strength of each player.
             for (Player player: team) {
+                teamEliminated = teamEliminated && (!player.isAlive() || player.isFalling());
+
                 int xDirection = player.getXDirection();
                 if (!player.isAlive()) {
                     speed -= xDirection * player.getStrength();
@@ -104,8 +110,14 @@ public class TugOfWar extends Game {
                     }
                 }
             }
+            if (teamEliminated) {
+                speed = 0;
+                stopPlayers(ACTIVE_TEAMS[(i+1) % ACTIVE_TEAMS.length]);
+                break;
+            }
         }
         speed /= TEAM_SIZE;
+
         // Position the rope and flag.
         controller.rope.setX(controller.rope.getX() + speed);
         controller.flag.setLayoutX(controller.flag.getLayoutX() + speed);
@@ -186,7 +198,58 @@ public class TugOfWar extends Game {
     @Override
     public void stop() {
         super.stop();
+
+        // Process remaining teams.
+        for (int teamIndex: ACTIVE_TEAMS) {
+            teams.remove(teamIndex);
+        }
+        while (teams.size() >= 2) {
+            // Select two teams and calculate their total strengths.
+            double[] strengths = new double[2];
+            for (int teamIndex = 0; teamIndex < 2; teamIndex++) {
+                double strength = 0;
+                for (Player player: teams.get(teamIndex)) {
+                    strength += player.getStrength();
+                }
+                strengths[teamIndex] = strength;
+            }
+
+            // Eliminate teams based on their strengths.
+            if (strengths[0] > strengths[1]) {
+                killPlayers(1);
+                stopPlayers(0);
+            }
+            else if (strengths[1] > strengths[0]) {
+                killPlayers(0);
+                stopPlayers(1);
+            }
+            else {
+                int losingTeamIndex = random.nextInt(2);
+                killPlayers(losingTeamIndex);
+                stopPlayers((losingTeamIndex+1) % 2);
+            }
+
+            // Remove the two teams.
+            teams.subList(0, 2).clear();
+        }
+
         app.setScenePlayerboard();
+    }
+
+    // Stop the players on the specified team.
+    private void stopPlayers(int teamIndex) {
+        for (Player player: teams.get(teamIndex)) {
+            if (player.isPlaying()) {
+                player.stop();
+            }
+        }
+    }
+
+    // Kill the players on the specified team.
+    private void killPlayers(int teamIndex) {
+        for (Player player: teams.get(teamIndex)) {
+            player.kill();
+        }
     }
 
     protected void onLeftPress() {
