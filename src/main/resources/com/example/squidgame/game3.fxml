@@ -14,7 +14,7 @@
         <Rectangle fx:id="lineCenter1" fill="#FFBF00" height="15.0"/>
         <Rectangle fx:id="platform2" fill="#515151" height="200.0"/>
         <Rectangle fx:id="lineCenter2" fill="#FFBF00" height="15.0"/>
-        <Rectangle fx:id="rope" height="7.5" width="1000.0" fill="#E6E6E6" stroke="#808080"/>
+        <Rectangle fx:id="rope" height="7.5" width="800.0" fill="#E6E6E6" stroke="#808080"/>
         <Polygon fx:id="flag"/>
     </Pane>
 </VBox>

@@ -17,8 +17,10 @@ public class TugOfWar extends Game {
     private final int[] ACTIVE_TEAMS = new int[2];
     // Index of team containing the human player.
     private int humanTeamIndex;
-    // Collective speed of all players on both teams.
+    // Current speed of all players.
     private double speed;
+    // Speed of all players when all players on both teams are pulling.
+    private double maxSpeed;
     // Bounds of middle region, as ratios of window width.
     private final double[] BOUNDS = {0.4, 0.6};
     // Height and width of flag.
@@ -80,31 +82,33 @@ public class TugOfWar extends Game {
 
     @Override
     public void handle(long now) {
-        double speed = 0;
-        int side = 0;
+        speed = maxSpeed * TEAM_SIZE;
         for (int teamIndex: ACTIVE_TEAMS) {
             List<Player> team = teams.get(teamIndex);
             for (Player player: team) {
-                if (player.isAlive()) {
-                    int xDirection = player.getXDirection();
-                    if (xDirection != 0) {
-                        double speedIncrement = player.getStrength() * (player.isFalling() ? 0.5 : 1.0);
-                        if (!player.isComputer() && !player.isFalling()) {
-                            long elapsed = now - timePull;
-                            if (elapsed <= PULL_DURATION) {
-                                speedIncrement *= 1 + 5 * (1 - elapsed / PULL_DURATION);
-                            }
-                        }
-                        speed += xDirection * speedIncrement;
+                int xDirection = player.getXDirection();
+                if (!player.isAlive()) {
+                    speed -= xDirection * player.getStrength();
+                }
+                else if (player.isFalling()) {
+                    speed -= xDirection * player.getStrength() / 2;
+                }
+
+                // Increase the speed if the human player has just started pulling.
+                if (!player.isComputer() && xDirection != 0 && !player.isFalling() && player.isAlive()) {
+                    long elapsed = now - timePull;
+                    if (elapsed <= PULL_DURATION) {
+                        // Increase the speed more if the human player's team is at a higher disadvantage.
+                        speed += xDirection * player.getStrength() * (1 - elapsed / PULL_DURATION)
+                                * (5 + (xDirection * maxSpeed < 0 ? 5 * Math.abs(maxSpeed) : 0));
                     }
                 }
             }
-            side += 1;
         }
-        this.speed = speed / (TEAM_SIZE * 1.0);
+        speed /= TEAM_SIZE;
         // Position the rope and flag.
-        controller.rope.setX(controller.rope.getX() + this.speed);
-        controller.flag.setLayoutX(controller.flag.getLayoutX() + this.speed);
+        controller.rope.setX(controller.rope.getX() + speed);
+        controller.flag.setLayoutX(controller.flag.getLayoutX() + speed);
 
         super.handle(now);
     }
@@ -153,13 +157,16 @@ public class TugOfWar extends Game {
         ACTIVE_TEAMS[sideIndex] = humanTeamIndex;
         ACTIVE_TEAMS[(sideIndex+1) % 2] = (humanTeamIndex+1) % numberTeams;
 
+        // Position players in the two active teams and start pulling.
         int side = 0;
+        maxSpeed = 0;
         final int SPACING = 10;
         for (int teamIndex: ACTIVE_TEAMS) {
             int i = 0;
             for (Player player: teams.get(teamIndex)) {
                 player.setPlaying(true);
                 int xDirection = side == 0 ? -1 : +1;
+                maxSpeed += xDirection * player.getStrength();
                 player.setX(
                         X_MAX/2.0 + xDirection * (X_MAX*0.2 + i * SPACING)
                 );
@@ -172,6 +179,8 @@ public class TugOfWar extends Game {
             }
             side += 1;
         }
+        maxSpeed /= TEAM_SIZE;
+        System.out.printf("Maximum speed: %.2f\n", maxSpeed);
     }
 
     @Override
