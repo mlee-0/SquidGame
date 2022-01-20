@@ -7,6 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -21,6 +23,8 @@ public class Dalgona extends Game {
     private static final int LICK_SIZE = 50;
     private final Canvas canvas;
     private final GraphicsContext gc;
+
+    private final MediaPlayer music = new MediaPlayer(new Media(getClass().getResource("game_2.mp3").toExternalForm()));
 
     private final ControllerGame2 controller;
 
@@ -58,6 +62,9 @@ public class Dalgona extends Game {
         KeyEventHandler handler = new KeyEventHandler();
         scene.setOnKeyPressed(handler);
         scene.setOnKeyReleased(handler);
+
+        music.setCycleCount(MediaPlayer.INDEFINITE);
+        music.setVolume(Main.getApp().getVolumeMusic());
     }
 
     public Scene getScene() { return scene; }
@@ -134,12 +141,6 @@ public class Dalgona extends Game {
             }
             // Human is cutting a licked area.
             if (lickedNearby) {
-//                int[] buffer = new int[searchDistance * searchDistance];
-//                imagePixelReader.getPixels(
-//                        x - searchDistance, y - searchDistance, searchDistance, searchDistance,
-//                        PixelFormat.getIntArgbInstance(), buffer, 0, 0
-//                );
-
                 // The distance in all directions from the player to be searched for a cutting location.
                 int searchDistance = LICK_SIZE / 4;
                 // The smallest distance found.
@@ -206,11 +207,13 @@ public class Dalgona extends Game {
         );
         imagePixelReader = image.getPixelReader();
         controller.imageView.setImage(image);
+        music.play();
     }
 
     @Override
     public void stop() {
         super.stop();
+        music.stop();
         app.setScenePlayerboard();
     }
 
