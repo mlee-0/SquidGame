@@ -128,11 +128,11 @@ public class Dalgona extends Game {
             // Check if any pixel within a specified distance is licked.
             boolean lickedNearby = false;
             loop:
-            for (int distance = 1; distance < LICK_SIZE / 2; distance++) {
-                for (int row: new int[] {-1, 1}) {
-                    for (int column: new int[] {-1, 1}) {
-                        double brightness = writableImage.getPixelReader().getColor(x+column, y+row).getBrightness();
-                        if (brightness > 0 && brightness < 1) {
+            for (int distance = 1; distance < LICK_SIZE / 8; distance++) {
+                for (int row: new int[] {-distance, distance}) {
+                    for (int column: new int[] {-distance, distance}) {
+                        double saturation = writableImage.getPixelReader().getColor(x+column, y+row).getSaturation();
+                        if (saturation > 0.0) {
                             lickedNearby = true;
                             break loop;
                         }
