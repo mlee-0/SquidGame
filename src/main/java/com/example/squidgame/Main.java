@@ -163,8 +163,11 @@ public class Main extends Application {
             int column = i % 24;
             Button button = new Button(player.getPlayerNumber());
             button.setStyle(button.getStyle() +
-                    String.format(".button {; -fx-background-color: %s; -fx-text-fill: %s; -fx-padding: 3}",
-                            i == humanPlayerNumber ? Colors.WHITE : Colors.PINK_LIGHT, Colors.PLAYER_DARK)
+                    String.format(".button {; -fx-font-weight: %s; -fx-background-color: %s; -fx-text-fill: %s; -fx-padding: 3",
+                            i == humanPlayerNumber ? "bold" : "normal",
+                            i == humanPlayerNumber ? Colors.WHITE : Colors.PINK_LIGHT,
+                            Colors.PLAYER_DARK
+                    )
             );
             button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             button.setOnAction(event -> {
@@ -226,7 +229,7 @@ public class Main extends Application {
                 new Dalgona(),
                 new TugOfWar(),
         };
-        gameIndex = 1;
+        gameIndex = 2;
         remaining = MAX_PLAYERS;
         prize = 0;
         updateLabelRemaining();
