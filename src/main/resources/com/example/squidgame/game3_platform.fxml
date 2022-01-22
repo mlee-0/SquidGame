@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.Group?>
+
+<Group fx:id="group"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.squidgame.ControllerGame3Platform">
+    <Rectangle fx:id="platform" fill="#515151" height="200.0" width="1.0"/>
+    <Rectangle fx:id="lineCenter" fill="#FFBF00" height="10.0" width="1.0" y="95"/>
+    <Rectangle fx:id="lineTop" fill="#FFBF00" height="25.0" width="1.0"/>
+    <Rectangle fx:id="lineBottom" fill="#FFBF00" height="25.0" width="1.0" y="175.0"/>
+</Group>

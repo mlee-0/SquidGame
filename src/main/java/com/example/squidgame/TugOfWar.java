@@ -6,6 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Paint;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class TugOfWar extends Game {
     private final double[] FLAG_SIZE = {15.0, 30.0};
     // Time, in nanoseconds, when the human starts pulling.
     private long timePull;
-    // Duration, in nanoseconds, for which the initial pull by the human lasts.
+    // Duration, in nanoseconds, of the initial pull by the human.
     private final double PULL_DURATION = 0.25e9;
 
     private final ControllerGame3 controller;
@@ -48,20 +49,27 @@ public class TugOfWar extends Game {
         };
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("game3.fxml"));
-        FXMLLoader fxmlLoaderPlatform = new FXMLLoader(getClass().getResource("platform.fxml"));
+        FXMLLoader fxmlLoaderPlatform1 = new FXMLLoader(getClass().getResource("game3_platform.fxml"));
+        FXMLLoader fxmlLoaderPlatform2 = new FXMLLoader(getClass().getResource("game3_platform.fxml"));
         setRoot(fxmlLoader);
 
         controller = fxmlLoader.getController();
-        controller.platform1.setWidth(X_MAX * BOUNDS[0]);
-        controller.platform1.setY((Y_MAX - controller.platform1.getHeight())/2);
-        controller.lineCenter1.setWidth(X_MAX * BOUNDS[0]);
-        controller.lineCenter1.setY((Y_MAX - controller.lineCenter1.getHeight())/2);
-        controller.platform2.setWidth(X_MAX * BOUNDS[0]);
-        controller.platform2.setX(X_MAX * BOUNDS[1]);
-        controller.platform2.setY((Y_MAX - controller.platform2.getHeight())/2);
-        controller.lineCenter2.setWidth(X_MAX * BOUNDS[0]);
-        controller.lineCenter2.setX(X_MAX * BOUNDS[1]);
-        controller.lineCenter2.setY((Y_MAX - controller.lineCenter2.getHeight())/2);
+        try {
+            fxmlLoaderPlatform1.load();
+            fxmlLoaderPlatform2.load();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        ControllerGame3Platform controllerPlatform1 = fxmlLoaderPlatform1.getController();
+        ControllerGame3Platform controllerPlatform2 = fxmlLoaderPlatform2.getController();
+        controller.pane.getChildren().add(0, controllerPlatform1.group);
+        controller.pane.getChildren().add(1, controllerPlatform2.group);
+        controllerPlatform1.group.setLayoutX(X_MAX * BOUNDS[0]/2);
+        controllerPlatform1.group.setLayoutY((Y_MAX - controllerPlatform1.platform.getHeight())/2);
+        controllerPlatform1.group.setScaleX(X_MAX * BOUNDS[0]);
+        controllerPlatform2.group.setLayoutX(X_MAX * (1 - (1 - BOUNDS[1])/2));
+        controllerPlatform2.group.setLayoutY((Y_MAX - controllerPlatform1.platform.getHeight())/2);
+        controllerPlatform2.group.setScaleX(X_MAX * (1 - BOUNDS[1]));
         controller.pane.setMaxWidth(X_MAX);
         controller.pane.setMaxHeight(Y_MAX);
         controller.rope.setX((X_MAX - controller.rope.getWidth())/2);
