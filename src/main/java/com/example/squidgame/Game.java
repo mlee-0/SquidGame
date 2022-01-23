@@ -27,6 +27,8 @@ abstract public class Game extends AnimationTimer {
     protected double Z_MIN;
     protected double Z_MAX = 100;
 
+    // The human player.
+    protected Player human;
     // The initial X and Y positions for players. Use a negative number to randomize the position within the possible range of values.
     protected double[] startingPosition = {X_MIN, Y_MIN};
     // The minimum and maximum possible speeds for players.
@@ -107,6 +109,7 @@ abstract public class Game extends AnimationTimer {
         super.start();
         elapsed = 0;
         previous = 0;
+        human = app.getHumanPlayer();
         app.resetPlayers();
         app.updateLabelStatus();
     }
@@ -122,14 +125,14 @@ abstract public class Game extends AnimationTimer {
 
     protected void onEscapePress() {}
     protected void onEscapeRelease() { stop(); System.out.printf("Quitting %s\n", NAME); }
-    protected void onLeftPress() { app.getHumanPlayer().setMoveX(-1); }
-    protected void onLeftRelease() { app.getHumanPlayer().setMoveX(0); }
-    protected void onRightPress() { app.getHumanPlayer().setMoveX(+1); }
-    protected void onRightRelease() { app.getHumanPlayer().setMoveX(0); }
-    protected void onUpPress() { app.getHumanPlayer().setMoveY(-1); }
-    protected void onUpRelease() { app.getHumanPlayer().setMoveY(0); }
-    protected void onDownPress() { app.getHumanPlayer().setMoveY(+1); }
-    protected void onDownRelease() { app.getHumanPlayer().setMoveY(0); }
+    protected void onLeftPress() { human.setMoveX(-1); }
+    protected void onLeftRelease() { human.setMoveX(0); }
+    protected void onRightPress() { human.setMoveX(+1); }
+    protected void onRightRelease() { human.setMoveX(0); }
+    protected void onUpPress() { human.setMoveY(-1); }
+    protected void onUpRelease() { human.setMoveY(0); }
+    protected void onDownPress() { human.setMoveY(+1); }
+    protected void onDownRelease() { human.setMoveY(0); }
     protected void onSpacePress() {}
     protected void onSpaceRelease() {}
     protected void onCPress() {}

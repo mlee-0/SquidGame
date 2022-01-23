@@ -135,12 +135,12 @@ public class Main extends Application {
         }
         return playing;
     }
-    public Player[] getPlayingPlayers() {
-        Player[] playingPlayers = new Player[getRemaining()];
+    public Player[] getPlayingPlayers(boolean excludeHuman) {
+        Player[] playingPlayers = new Player[excludeHuman ? getRemaining() - 1 : getRemaining()];
         if (playingPlayers.length > 0) {
             int i = 0;
             for (Player player: players) {
-                if (player.isPlaying()) {
+                if (player.isPlaying() && (!excludeHuman || player.isComputer())) {
                     playingPlayers[i] = player;
                     i += 1;
                 }
@@ -228,8 +228,9 @@ public class Main extends Application {
                 new RedLightGreenLight(),
                 new Dalgona(),
                 new TugOfWar(),
+                new Marbles(),
         };
-        gameIndex = 2;
+        gameIndex = 3;
         remaining = MAX_PLAYERS;
         prize = 0;
         updateLabelRemaining();

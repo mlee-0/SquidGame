@@ -29,6 +29,8 @@ public class Player extends Entity {
     private boolean playing;
     private boolean cutting;
     private boolean licking;
+    private int marbles;
+    private int marblesBet;
 
     private long timeKill = Long.MAX_VALUE;
     private long timeStartMove = Long.MAX_VALUE;
@@ -88,12 +90,17 @@ public class Player extends Entity {
     public double getStrength() { return strength; }
 
     public boolean isPlaying() { return playing; }
-    public boolean isCutting() { return cutting; }
-    public boolean isLicking() { return licking; }
     public void setPlaying(boolean playing) { this.playing  = playing; }
+    public boolean isCutting() { return cutting; }
     public void setCutting(boolean cutting) { this.cutting = cutting; }
-
+    public boolean isLicking() { return licking; }
     public void setLicking(boolean licking) { this.licking = licking; }
+    public int getMarbles() { return marbles; }
+    public void setMarbles(int marbles) { this.marbles = marbles; }
+    public void changeMarbles(int marbles) { this.marbles += marbles; }
+    public int getMarblesBet() { return marblesBet; }
+    public void setMarblesBet(int marblesBet) { this.marblesBet = marblesBet; }
+
     public long getTimeKill() { return timeKill; }
     public long getTimeStartMove() { return timeStartMove; }
     public long getTimeStopMove() { return timeStopMove; }

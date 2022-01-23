@@ -163,7 +163,7 @@ public class TugOfWar extends Game {
         int remaining = Main.getApp().getRemaining();
         teams = new ArrayList<>(remaining);
         int numberTeams = (int) Math.ceil(remaining / (double)TEAM_SIZE);
-        Player[] playingPlayers = Main.getApp().getPlayingPlayers();
+        Player[] playingPlayers = Main.getApp().getPlayingPlayers(false);
 
         // Assign players to teams.
         for (int i = 0; i < remaining; i++) {
@@ -271,11 +271,11 @@ public class TugOfWar extends Game {
     }
 
     protected void onLeftPress() {
-        app.getHumanPlayer().setMoveX(-1);
+        human.setMoveX(-1);
         timePull = now;
     }
     protected void onRightPress() {
-        app.getHumanPlayer().setMoveX(+1);
+        human.setMoveX(+1);
         timePull = now;
     }
     protected void onUpPress() {}

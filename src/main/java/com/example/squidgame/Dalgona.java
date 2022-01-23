@@ -71,7 +71,7 @@ public class Dalgona extends Game {
     public Pane getPane() { return controller.pane; }
 
     public void checkPassed() {
-        if (!app.getHumanPlayer().isAlive() && !app.getHumanPlayer().isPlaying()) {
+        if (!human.isAlive() && !human.isPlaying()) {
             return;
         }
 
@@ -104,7 +104,6 @@ public class Dalgona extends Game {
         System.out.printf("%.1f%% matching\n", matchPercent * 100);
 
         boolean passed = matchPercent >= 0.6;
-        Player human = app.getHumanPlayer();
         if (passed) {
             human.stop();
         }
@@ -117,7 +116,6 @@ public class Dalgona extends Game {
     public void handle(long now) {
         super.handle(now);
 
-        Player human = app.getHumanPlayer();
         human.move();
         if (human.isCutting()) {
             int x = (int) human.getX();
@@ -175,11 +173,8 @@ public class Dalgona extends Game {
         }
 
         if (random.nextFloat() < 0.01 * elapsed/TIME_LIMIT) {
-            Player[] playingPlayers = app.getPlayingPlayers();
-            int index = random.nextInt(playingPlayers.length);
-            if (playingPlayers[index].isComputer()) {
-                playingPlayers[index].kill();
-            }
+            Player[] playingPlayers = app.getPlayingPlayers(true);
+            playingPlayers[random.nextInt(playingPlayers.length)].kill();
         }
     }
 
@@ -200,7 +195,7 @@ public class Dalgona extends Game {
     @Override
     public void start() {
         super.start();
-        controller.pane.getChildren().add(app.getHumanPlayer().getSprite());
+        controller.pane.getChildren().add(human.getSprite());
         image = new Image(
                 getClass().getResource(files[random.nextInt(files.length)]).toExternalForm(),
                 IMAGE_SIZE, IMAGE_SIZE, true, true
@@ -220,17 +215,15 @@ public class Dalgona extends Game {
     protected void onCPress() {
         gc.setFill(Paint.valueOf(Colors.BLACK));
         gc.setGlobalAlpha(1.0);
-        Player human = app.getHumanPlayer();
         human.setCutting(true);
         human.setLicking(false);
     }
-    protected void onCRelease() { app.getHumanPlayer().setCutting(false);}
+    protected void onCRelease() { human.setCutting(false);}
     protected void onLPress() {
         gc.setFill(Colors.DALGONA_DARK);
         gc.setGlobalAlpha(0.01);
-        Player human = app.getHumanPlayer();
         human.setLicking(true);
         human.setCutting(false);
     }
-    protected void onLRelease() { app.getHumanPlayer().setLicking(false); }
+    protected void onLRelease() { human.setLicking(false); }
 }

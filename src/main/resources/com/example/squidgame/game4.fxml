@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<VBox alignment="TOP_CENTER" spacing="10.0"
+          style="-fx-background-color: #FFEABF" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.example.squidgame.ControllerGame4">
+
+    <GridPane fx:id="pane" hgap="10.0" vgap="10.0" alignment="CENTER">
+        <Label fx:id="labelMarblesLeft" alignment="BASELINE_CENTER" style="-fx-font-size: 30; -fx-font-weight: bold" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Pane fx:id="paneLeft" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <HBox spacing="5.0" GridPane.rowIndex="2" GridPane.columnIndex="0">
+            <Spinner fx:id="spinnerLeft" min="1" max="20" initialValue="1" focusTraversable="false" style="-fx-font-size: 15"/>
+            <Button fx:id="buttonBetLeft" text="Bet" focusTraversable="false" style="-fx-font-size: 15"/>
+        </HBox>
+
+        <Label fx:id="labelMarblesRight" alignment="BASELINE_CENTER" style="-fx-font-size: 30; -fx-font-weight: bold" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <Pane fx:id="paneRight" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <HBox spacing="5.0" GridPane.rowIndex="2" GridPane.columnIndex="2">
+            <Spinner fx:id="spinnerRight" min="1" max="20" initialValue="1" focusTraversable="false" style="-fx-font-size: 15"/>
+            <Button fx:id="buttonBetRight" text="Bet" focusTraversable="false" style="-fx-font-size: 15"/>
+        </HBox>
+
+        <Label fx:id="labelGuess" style="-fx-font-size: 30" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Pane fx:id="paneCenter" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <HBox GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <Button fx:id="buttonEven" text="Even" focusTraversable="false" style="-fx-font-size: 15"/>
+            <Button fx:id="buttonOdd" text="Odd" focusTraversable="false" style="-fx-font-size: 15"/>
+        </HBox>
+    </GridPane>
+</VBox>
