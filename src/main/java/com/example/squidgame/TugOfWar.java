@@ -4,6 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 
 import java.io.IOException;
@@ -30,6 +32,8 @@ public class TugOfWar extends Game {
     private long timePull;
     // Duration, in nanoseconds, of the initial pull by the human.
     private final double PULL_DURATION = 0.25e9;
+
+    private final MediaPlayer music = new MediaPlayer(new Media(getClass().getResource("game_3.mp3").toExternalForm()));
 
     private final ControllerGame3 controller;
 
@@ -83,6 +87,9 @@ public class TugOfWar extends Game {
         KeyEventHandler handler = new KeyEventHandler();
         scene.setOnKeyPressed(handler);
         scene.setOnKeyReleased(handler);
+
+        music.setCycleCount(MediaPlayer.INDEFINITE);
+        music.setVolume(Main.getApp().getVolumeMusic());
     }
 
     public Scene getScene() { return scene; }
@@ -201,6 +208,8 @@ public class TugOfWar extends Game {
         }
         maxSpeed /= TEAM_SIZE;
         System.out.printf("Maximum speed: %.2f\n", maxSpeed);
+
+        music.play();
     }
 
     @Override
@@ -241,6 +250,7 @@ public class TugOfWar extends Game {
             teams.subList(0, 2).clear();
         }
 
+        music.stop();
         app.setScenePlayerboard();
     }
 
